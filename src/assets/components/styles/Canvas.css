@@ -1,0 +1,346 @@
+.canvasWrapper{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    background-color: #444;
+    border: 1px solid var(--darkMedium);
+    border-width: 1px 0 0 1px;
+    --shadow: 5px 5px 10px rgba(0,0,0,0.125);
+    border-top-left-radius: 16px;
+    overflow: hidden;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.2) inset
+}
+
+.canvasWrapper_brush{
+    cursor: url(/images/selfmade/brush.png), auto;
+}
+.canvasWrapper_eraser{
+    cursor: none;
+}
+.canvasWrapper_pipette{
+    cursor: url(/images/selfmade/pipette.png), auto;
+}
+.canvasWrapper_fill{
+    cursor: url(/images/selfmade/fill.png) 0 32, auto;
+}
+.canvasWrapper_text{
+    cursor: url(/images/selfmade/text.png) 0 32, auto;
+}
+
+
+
+.newProject{
+    display: flex;
+    background-color: var(--lightDark);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.createPart{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+}
+.createPart > h1{
+    font-size: 1.75rem;
+    font-weight: normal;
+    margin: 0;
+}
+.createPart > button{
+    width: fit-content;
+}
+
+.newProjMain{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    padding: 30px 0;
+    max-width: 100%;
+    width: 100%;
+}
+.inputPixels input{
+    width: 75px;
+    font-size: 1.125rem;
+}
+
+.inputs{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.inputPixels{
+    width: 60%;
+    min-width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    font-size: 1.125rem;
+}
+.inputPixels span{
+    width: 1.25rem;
+    text-align: center;
+}
+
+.showBack{
+    color: var(--darkLight);
+    transition: 0.15s;
+    text-decoration: line-through;
+    text-decoration-color: transparent;
+}
+.inputBack{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.showLineThrough{
+    color: var(--darkMedium);
+    text-decoration: line-through;
+    text-decoration-color: var(--Medium);
+    transition: 0.15s;
+}
+.showTrans{
+    background-image: url(../backgrounds/transback.jpg);
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.resPresets{
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-left: 1px solid var(--darkMedium);
+}
+.resPresets_header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.resPresets_header > h1{
+    margin: 0;
+    font-size: 1rem;
+    font-weight: normal;
+    color: var(--Medium)
+}
+.resPresets_header select{
+    max-width: 40%;
+}
+.resPresContainer{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 275px;
+}
+
+
+.canvasContainer{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    transition: 0.2s;
+}
+.noTransition{
+    transition: none;
+}
+.canvasContainer_eraser,
+.canvasContainer_brush{
+    cursor: none;
+}
+.canvasContainer_pipette{
+    cursor: url(/images/selfmade/pipette.png), auto;
+}
+.canvasWrapper_move{
+    cursor:move
+}
+/*Only show colorpicker overlay when hovering canvas: */
+.canvasContainer_pipette .paintVisCanvas{display: none;}
+.canvasContainer_pipette:hover .paintVisCanvas{display: block;}
+
+
+.mainCanvas{
+    background-image: url(../backgrounds/transback.jpg);
+    border: 1px solid #aaa;
+    box-shadow: var(--shadow);
+    height: 100%;
+    /*image-rendering: pixelated;
+    height: 99%;
+    cursor: url("/images/brush-svgrepo-com.png"), pointer;*/
+}
+.undoCanvas{
+    position: absolute;
+    left: 1px; /*1px offset for .mainCanvas border*/
+    top: 1px;
+    pointer-events: none;
+    height: 100%;
+    display: none;
+}
+.paintVisCanvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    /*image-rendering: pixelated;
+    cursor: none;
+    filter: drop-shadow(1px 1px 0 rgba(255,255,255,0.5));*/
+}
+
+.pixalated{
+    image-rendering: pixelated;
+}
+
+.locationMapContainer{
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    height: 14vh;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border: 1px solid var(--Medium);
+    transition: 0.2s;
+}
+.locationMap{
+    background-image: url(../backgrounds/transback.jpg);
+    height: 14vh;
+    image-rendering: pixelated;
+}
+.locationMapContainer-visible{
+    opacity: 0.8;
+}
+.positionVis{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /*background-color: rgba(255,0,0,0.25);
+    height: 50%;
+    aspect-ratio: 16/9;
+    border: 1px solid black;
+    border-radius: 4px;
+    box-shadow: 0 0 5px white inset;*/
+}
+.positionVis::before{
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    backdrop-filter: invert(100%);
+    background-color: rgba(0,0,0,0.33);
+}
+.positionVis::after{
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    backdrop-filter: invert(100%);
+    background-color: rgba(0,0,0,0.33);
+}
+.visSides{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.visSides::before{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    width: 2px;
+    backdrop-filter: invert(100%);
+    background-color: rgba(0,0,0,0.33);
+}
+.visSides::after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 2px;
+    backdrop-filter: invert(100%);
+    background-color: rgba(0,0,0,0.33);
+}
+
+
+.canvasInfo{
+    position: absolute;
+    display: flex;
+    gap: 5px;
+    bottom: 0;
+    max-width: 100%;
+    right: 0;
+    background-color: var(--lightDark);
+    border-top-left-radius: 8px;
+    text-align: right;
+    padding: 0 7px;
+    font-size: 0.75rem;
+    color: var(--Medium);
+    z-index: 10;
+    transition: opacity 0.2s;
+}
+.canvasInfo *{
+    cursor: help
+}
+
+.canvasInfo_invis{
+    opacity: 0;
+}
+
+
+.scaleInfo,
+.simpleOption{
+    animation: scaleFadeIn 0.2s
+}
+
+.scaleFadeIn{
+    animation: scaleFadeIn 0.2s
+}
+
+@keyframes scaleFadeIn {
+    from {scale: 0.5; opacity: 0;}
+    to {scale: 1; opacity: 1}
+}
+
+
+@media screen and (max-width: 700px) {
+    .canvasWrapper{
+        border-width: 1px 0 1px ;
+        --shadow: 5px 5px 10px rgba(0,0,0,0.125);
+        border-top-left-radius: 0;
+        box-shadow: 0px 3px 5px rgba(0,0,0,0.2) inset
+    }
+
+    .newProject{
+        flex-direction: column;
+        max-height: calc(100% - 30px);
+        width: calc(100% - 30px);
+        overflow-y: auto;
+    }
+
+    .resPresContainer{
+        width: 100%;
+    }
+
+    .resPresets{
+        border-top: 1px solid var(--darkMedium);
+        box-shadow: 0 0 15px rgba(0,0,0,0.5) inset;
+        border-left: none;
+    }
+}

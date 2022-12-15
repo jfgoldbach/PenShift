@@ -1,0 +1,128 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --Dark: #000;
+  --semiDark: #111;
+  --mediumDark: #191919;
+  --transDark: #252525;
+  --lightDark: #333;
+  --lighterDark: #555;
+  --darkMedium: #777;
+  --Medium: #aaa;
+  --lightMedium: #b5b5b5;
+  --darkLight: #ddd;
+  --Light: #fff;
+
+  --successTrans: rgba(53, 106, 62, 0.75);
+}
+
+.debug{
+  background-color: red;
+  outline: 2px solid orange;
+}
+
+.invert{
+  filter: invert(1);
+}
+
+.mirrorX{
+  transform: scaleX(-1);
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  background-color: black;
+  height: 100vh;
+  width: 100vw;
+  /*overflow: hidden;*/
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+.aspectCube{
+  aspect-ratio: 1/1;
+}
+
+button:hover {
+  border-color: #646cff;
+  box-shadow: 0 0 10px rgba(158, 163, 255, 0.25);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+input, select{
+  color: var(--lighterMedium)
+}
+
+input:hover, input:focus,
+ select:hover, select:focus{
+  color: var(--Light);
+  border-color: #646cff;
+  box-shadow: 0 0 10px rgba(158, 163, 255, 0.33);
+  transition: box-shadow 0.2s;
+}
+
+.unavailable{
+  opacity: 0.4;
+  filter: saturate(0);
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  body{
+    height: var(--mobileHeight);
+    overflow: hidden;
+  }
+}

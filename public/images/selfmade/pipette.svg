@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="21.59248mm"
+   height="21.601288mm"
+   viewBox="0 0 21.59248 21.601288"
+   version="1.1"
+   id="svg5"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-6.3225352,-40.873015)">
+    <path
+       id="rect5796"
+       style="fill:#000000;stroke-width:0.188806"
+       d="M 26.825294,41.971473 C 25.12213,40.268309 23.256007,40.805685 22.227827,41.833865 l -3.687248,3.687248 c -0.639346,0.639346 -1.166293,1.983892 -0.875697,2.941516 -0.015,0.01302 -0.03,0.02618 -0.04431,0.0405 l -6.407356,6.407359 -0.06785,1.059593 -4.5889517,5.084438 c -0.272975,0.302433 -0.3200761,0.720293 -0.071682,0.968686 l 0.2889033,0.288904 c 0.2483925,0.248393 0.6662494,0.201281 0.9686818,-0.07169 l 5.0844396,-4.588951 1.059593,-0.06785 6.407358,-6.407354 c 0.01432,-0.01432 0.02741,-0.02939 0.0405,-0.04431 0.957623,0.290595 2.301783,-0.23674 2.941129,-0.876086 l 3.687248,-3.687249 c 1.028178,-1.028178 1.544313,-2.915545 -0.137221,-4.597079 z m -8.641745,8.209166 0.445005,0.445005 c 0.484319,0.484318 0.01333,0.89765 -0.256854,1.167846 l -4.741097,4.741098 -0.996139,0.06108 -4.5963096,4.472071 C 7.7647035,61.333696 7.500626,61.505383 7.4383695,61.443126 l -0.072614,-0.07261 c -0.06224,-0.06224 0.1093442,-0.326419 0.3753811,-0.599821 l 4.4720644,-4.596318 0.08127,-0.975946 4.741097,-4.741097 c 0.270199,-0.270199 0.727329,-0.697404 1.148041,-0.276665 z"
+       inkscape:export-filename="pipette.svg"
+       inkscape:export-xdpi="150.58987"
+       inkscape:export-ydpi="150.58987"
+       sodipodi:nodetypes="csscscccsscccscsscccsccccsscccscc" />
+  </g>
+</svg>

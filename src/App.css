@@ -1,0 +1,73 @@
+.App{
+    width: 100vw;
+    height: 100vh;
+    background-color: #151515;
+}
+
+input[type="color"]{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    background-color: transparent;
+}
+input[type="color"]::-webkit-color-swatch,
+input[type="color"]::-moz-color-swatch{
+    border-radius: 8px;
+    border: none;
+    transition: 0.1s;
+}
+input[type="color"]:hover::-webkit-color-swatch,
+input[type="color"]:hover::-moz-color-swatch:hover{
+    border: 2px solid var(--darkMedium);
+    outline: 1px solid var(--darkLight);
+    transition: 0.1s;
+}
+
+input[type="number"]{
+    background-color: var(--mediumDark);
+    /*border: 1px solid var(--darkMedium);*/
+    border: none;
+    border-radius: 5px;
+}
+
+input[type="text"]{
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 1rem;
+    border: none;
+    background-color: var(--mediumDark);
+    text-align: center;
+    max-width: 100%;
+}
+
+input[type="checkbox"]{
+    --size: 18px;
+    width: var(--size);
+    height: var(--size);
+    cursor: pointer;
+}
+
+select{
+    text-align: center;
+    border: 1px solid var(--lighterDark);
+    border-radius: 5px;
+    background-color: var(--mediumDark);
+    padding: 3px;
+}
+
+label{
+    font-size: 0.85rem;
+    color: var(--lightMedium);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    line-height: 1.25rem;
+}

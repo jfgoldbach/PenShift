@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="25.934948mm"
+   height="26.171862mm"
+   viewBox="0 0 25.934948 26.171862"
+   version="1.1"
+   id="svg5"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-39.755254,-10.099642)">
+    <path
+       id="rect5620"
+       style="fill:#000000;stroke-width:0.201056"
+       d="m 51.922412,10.099642 c -0.402944,0 -0.727604,0.325175 -0.727604,0.728121 v 9.835575 c -1e-6,0.402945 0.32466,0.728121 0.727604,0.728121 h 0.217558 c 0.402944,0 0.727087,-0.325175 0.727087,-0.728121 v -9.835575 c 0,-0.402945 -0.324143,-0.728121 -0.727087,-0.728121 z m 3.632853,4.53254 c -0.24427,0 -0.488756,0.09395 -0.675927,0.28112 l -1.061951,1.06195 v 4.998662 c 0,0.517284 -0.696157,1.462956 -1.561662,1.462959 h -0.467672 c -0.865505,4e-6 -1.562179,-0.945675 -1.562178,-1.462959 v -1.40715 l -0.05168,0.05168 c -0.0017,-7.63e-4 -0.0014,-2.69e-4 -0.0031,-0.001 v 0.0041 l -3.090251,3.090768 c -0.374345,0.374345 -0.369781,0.972483 0,1.351338 l 9.178768,9.403561 c 0.369806,0.378831 0.976475,0.374345 1.350822,0 l 7.799007,-7.799007 c 0.374347,-0.374346 0.374348,-0.976992 0,-1.351339 l -9.178251,-9.40356 c -0.187174,-0.187174 -0.431656,-0.28112 -0.675928,-0.28112 z m -8.946224,3.65404 c -2.492704,0.0094 -6.083434,1.78962 -6.587808,5.241236 -0.428484,2.932271 -0.107414,3.819766 0.382433,5.321493 0.935426,2.867745 -1.235244,6.669419 -0.489248,7.342014 1.026146,0.848256 3.137723,-5.192188 4.359752,-9.277661 1.03245,-3.451673 0.894805,-4.817963 0.894805,-4.817963 1.152492,-1.093656 2.311558,-2.441469 3.452863,-3.582776 C 47.993819,18.36267 47.306999,18.2836 46.609041,18.286222 Z"
+       inkscape:export-filename="fill.svg"
+       inkscape:export-xdpi="150.58987"
+       inkscape:export-ydpi="150.58987"
+       sodipodi:nodetypes="sscsssssssscsssscccccccccccssssscscss" />
+  </g>
+</svg>

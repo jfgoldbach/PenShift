@@ -1,0 +1,25 @@
+.viewport{
+    background-color: #333;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+.secondPart{
+    display: flex;
+    background-color: var(--lightDark);
+    flex-grow: 0;
+    height: calc(100vh - 55px);
+    overflow: hidden;
+}
+
+@media screen and (max-width: 700px) {
+    .viewport{
+        height: var(--mobileHeight);
+    }
+    .secondPart{
+        flex-direction: column-reverse ;
+    }
+}
