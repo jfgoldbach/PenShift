@@ -101,6 +101,10 @@ input:hover, input:focus,
   transition: box-shadow 0.2s;
 }
 
+.waiting{
+  cursor: wait !important;
+}
+
 .unavailable{
   opacity: 0.4;
   filter: saturate(0);

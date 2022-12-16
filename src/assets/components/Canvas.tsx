@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useContext } from "react"
+import { areEqualArrays, hexToRgb, rgbToHex } from "../helper/helperFunctions"
 import { ResolutionPreset } from "./ResolutionPreset"
 import "./styles/Canvas.css"
 import { stateContext, toolType } from "./Viewport"
@@ -25,6 +26,7 @@ export function Canvas() {
     //const [containerTrans, setContainerTrans] = useState<[number,number]>([0,0])
     const [pickedColor, setPickedColor] = useState<string>()
     const [previewImg, setPreviewImg] = useState<string>()
+    const [originalZoom, setOriginalZoom] = useState<number>(100)
 
     const mousedown = useRef(false)
     const lastPos = useRef<[number, number]>() //is used for drawing and moving the canvas
@@ -39,12 +41,70 @@ export function Canvas() {
     const zoomRef = useRef<number>()
 
 
-    function numberToHex (n:number){
-        return n.toString(16).padStart(2,"0")
-    }
-    
-    function rgbToHex (r:number ,g:number ,b:number) {
-        return(`#${numberToHex(r)}${numberToHex(g)}${numberToHex(b)}`)
+
+    class queue {
+        pixel: [number,number][]
+        maxlength: number
+
+        constructor(firstEntry:[x:number,y:number], maxlength: number){
+            this.pixel = [firstEntry]
+            this.maxlength = maxlength
+        }
+
+        get queue(){
+            return this.pixel
+        }
+
+        enqueue (coords: [number, number]){
+            if(this.pixel.length < this.maxlength){
+                if(this.noDuplicate(coords[0], coords[1])){ //only pushes if these coordinates dont currently exist in the queue.
+                    this.pixel.push(coords)
+                }
+                //console.log("enqueue", coords)
+                //console.log( "length: ", this.pixel.length)
+            } else {
+                console.error(`Queue overflow! Maximal number of entries has been reached: ${this.maxlength}. Queue has been emptied.`)
+                console.log(this.pixel)
+                this.pixel = []
+            }
+        }
+
+        dequeue(){
+            if(this.pixel.length > 0){
+                //console.log("dequeue", this.pixel[0])
+                this.pixel.shift()
+                //console.log( "length: ", this.pixel.length)
+            } else {
+                console.error("Can't dequeue because queue is empty!")
+            }
+        }
+
+        next(){
+            if(this.pixel.length !== 0){
+                return this.pixel[0]
+            } else {
+                console.error("Can't return next entry: queue is empty!")
+            }
+        }
+
+        notEmpty(){
+            return (this.pixel.length > 0)
+        }
+
+        length(){
+            return this.pixel.length
+        }
+
+        noDuplicate(x:number, y:number){
+            //return this.pixel.filter(i => (i[0] === x && i[1] === y)).length === 0 //is slow.
+            let dupli = true
+            this.pixel.forEach(i => {
+                if(i[0] === x && i[1] === y){
+                    dupli = false
+                }
+            });
+            return dupli
+        }
     }
 
 
@@ -193,8 +253,6 @@ export function Canvas() {
                 //initial background fill
                 context.fillStyle = frontColor[1]
                 context.fillRect(0,0,resolution[0],resolution[1]) 
-
-                console.log(context.getImageData(0,0, 1,1))
             }
 
             const wrapper = wrapperRef.current
@@ -202,6 +260,9 @@ export function Canvas() {
                 setZoom([Math.round((resolution[1] * 1000) / wrapper.clientHeight)/10, "original"])
             }
             updatePaintVisSize()
+            if(wrapperRef.current){
+                setOriginalZoom(Math.round((resolution[1] * 1000) / wrapperRef.current.clientHeight)/10)
+            }
         }
     }, [resolution])
     
@@ -214,9 +275,9 @@ export function Canvas() {
             setPreviewImg(img)
             const documentIcon = document.getElementById("documentIcon")
             if(documentIcon){
-            documentIcon.href = img
+                documentIcon.href = img
             }
-            const dwnImg = document.getElementById("saveImg")
+            const dwnImg: HTMLImageElement | null = document.getElementById("saveImg")
             if(dwnImg){
                 dwnImg.src = img
                 //dwnImg.style.aspectRatio = `${resolution[0]}/${resolution[1]}`
@@ -253,56 +314,81 @@ export function Canvas() {
                 const pos = getMouseCanvasPos(e)
                 const canvas = canvasRef.current
                 const context = canvas?.getContext("2d")
-                if(canvas && context && pos && pos[0] && pos[1]){
-                    fill(context, canvas, Math.floor(pos[0]), Math.floor(pos[1]), context.getImageData(pos[0], pos[1], 1, 1).data, [255, 0, 0])
+                const fillColor = hexToRgb(color.current[0])
+                if(canvas && context && pos && pos[0] && pos[1] && fillColor){
+                    fill(context, canvas, Math.floor(pos[0]), Math.floor(pos[1]), context.getImageData(pos[0], pos[1], 1, 1).data, fillColor)
                 }
                 break
         }
     }
 
+    
+
+
     //recursive flood fill algo
-    function fill(context:CanvasRenderingContext2D, canvas:HTMLCanvasElement, initX:number, initY:number, removeColor:Uint8ClampedArray, fillColor:rgbColor){
-        //initializing data, that with the recursive habit of floodFill() would be generated over and over again
+    function fill(context:CanvasRenderingContext2D, canvas:HTMLCanvasElement, initX:number, initY:number, removeColor:Uint8ClampedArray, fill:rgbColor){
+        //initializing data, that with the recursive habit of floodFill() would be generated over and over again without changing
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
         const remove:rgbColor = [removeColor[0], removeColor[1], removeColor[2]]
-        const fillColor2 = [...fillColor, 255] //add transparency
-        //const checked: [number, number][] = [] //keeps track of already checked pixels. NOT USED because it makes the code a little slower
-        floodFill(context, canvas, initX, initY, remove, fillColor)
+        const fillColor = [...fill, 255] //add transparency
+        const list = new queue([initX, initY], 3000)
 
-        function floodFill (context:CanvasRenderingContext2D, canvas:HTMLCanvasElement, x:number, y:number, removeColor:rgbColor, fillColor:rgbColor){
-            const redPos = (y * canvas.width * 4) + x * 4 //index in imageData.data array of the red value (0-255), next indexes are g & b
-            const cur = [imageData.data[redPos], imageData.data[redPos+1], imageData.data[redPos+2]]
-            const removing = areEqualArrays(cur, remove) //check if the current pixel has the right color, so it can be overwritten
-            if(removing && x >= 0 && y >= 0 && x < canvas.width && y < canvas.height){
+
+        //return true if pixel is in canvas and has right color
+        function isPixelFillable (x: number, y: number){
+            const redPos = getRedPos(x,y)
+            const curColor: rgbColor = [imageData.data[redPos], imageData.data[redPos+1], imageData.data[redPos+2]]
+            const rightColor = areEqualArrays(curColor, remove) //check if the current pixel has the right color, so it can be overwritten
+            const valid = (list.notEmpty() && rightColor && x >= 0 && y >= 0 && x < canvas.width && y < canvas.height) //assignable to queue, has right color & is inside canvas
+            return valid
+        }
+
+        //getting the red position at given coordinates on the image data array
+        function getRedPos(x: number, y: number){
+            return (y * canvas.width * 4) + x * 4
+        }
+
+        //changing pixel color and enqueue next pixels to fill
+        function floodFill (){
+            const pos = list.next()
+            if(pos){
+                const x = pos[0]
+                const y = pos[1]
+                const redPos = getRedPos(x, y) //index in imageData.data array of the red value (0-255), next indexes are green, blue, alpha
+
+
                 for(let i = 0; i < 4; i++){
-                    imageData.data[redPos+i] = fillColor2[i]
+                    imageData.data[redPos+i] = fillColor[i]
                 }
-                //context.putImageData(imageData, 0, 0)//call putimageData() here and put floodFill()s inside setTimeout to show the fill process
-                //setTimeout(() => {
-                    floodFill(context, canvas, x+1, y, removeColor, fillColor)
-                    floodFill(context, canvas, x-1, y, removeColor, fillColor)
-                    floodFill(context, canvas, x, y+1, removeColor, fillColor)
-                    floodFill(context, canvas, x, y-1, removeColor, fillColor)
-                //}, 0);
-                
+
+                if(isPixelFillable(x+1, y)){
+                    list.enqueue([x+1, y])
+                }
+                if(isPixelFillable(x-1, y)){
+                    list.enqueue([x-1, y])
+                }
+                if(isPixelFillable(x, y+1)){
+                    list.enqueue([x, y+1])
+                }
+                if(isPixelFillable(x, y-1)){
+                    list.enqueue([x, y-1])
+                }
+
+
+                if(list.notEmpty()){
+                    list.dequeue() //remove current entry
+                }
             }
         }
+
+        while(list.notEmpty()){
+            floodFill()
+        }
+
         context.putImageData(imageData, 0, 0)
     }
 
-    //compare arrays
-    function areEqualArrays(arr1:any[], arr2:any[]){
-        if(arr1.length !== arr2.length){ //if they have different lengths
-            return false
-        }
-        for(let i = 0; i < arr1.length; i++)
-        {
-            if(arr1[i] !== arr2[i]){ //if values at equal indexes arent the same
-                return false
-            }
-        }
-        return true
-    }
+
 
     //reusable function to check if mouse is inside canvas
     function mouseInCanvas (e: MouseEvent) {
@@ -578,7 +664,7 @@ export function Canvas() {
                         ${mousedown.current? "noTransition" : ""}
                     `}
                     >
-                    <canvas className={`mainCanvas ${zoom[0] > 100 ? "pixalated" : ""}`} ref={canvasRef} id="canvas">
+                    <canvas className={`mainCanvas ${zoom[0] > originalZoom ? "pixalated" : ""}`} ref={canvasRef} id="canvas">
                         :/ Canvas can't be rendered: Try to enable JavaScript or use a different browser!
                     </canvas>
                     <canvas ref={undoCanvasRef} id="undoCanvas" className="undoCanvas"></canvas>

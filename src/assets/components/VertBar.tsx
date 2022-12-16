@@ -125,14 +125,14 @@ export function Vertbar() {
                 </div>
                 
                 <div className="colorWrapper">
-                    <input type="color" id="firstColor" title="[1] Primary color" className={tool && tool === "brush"? "active" : ""} value={frontColor[0]} onChange={changeFrontColor} />
+                    <input type="color" id="firstColor" title="[1] Primary color" className={tool && (tool === "brush" || tool === "fill")? "active" : ""} value={frontColor[0]} onChange={changeFrontColor} />
                     <input type="color" id="secondColor" title="[2] Secondary/background color" className={tool && tool === "eraser"? "active" : ""} value={frontColor[1]} onChange={changeBackColor} />
                 </div>
                 
             </div>
             <div className="vertBarButtom">
                 <button className="aspectCube" title="Settings">
-                    <img className="invert" src="images/Settings.svg" />
+                    <img className="invert" src="images/selfmade/Settings.svg" />
                 </button>
                 <a href="https://www.jfgoldbach.de" target="_blank" className="copy">
                     <small>&copy; 2022</small>

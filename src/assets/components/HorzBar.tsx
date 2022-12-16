@@ -176,17 +176,17 @@ export function HorzBar() {
             {!(containerTrans[0] === 0 && containerTrans[1] === 0) &&
                 <div className="horzFlexBetween">
                         <button className="mediumBtn scaleFadeIn" onClick={resetTransform}>
-                            <img title={`[C] Center canvas. Current translation: (${containerTrans[0]}px, ${containerTrans[1]}px)`} className="invert" src="images/arrows-pointing-to-center-svgrepo-com.svg"></img>
+                            <img title={`[C] Center canvas. Current translation: (${containerTrans[0]}px, ${containerTrans[1]}px)`} className="invert" src="images/selfmade/center.svg"></img>
                         </button>   
                 </div>
             }
 
             <div className="horzFlexBetween unavailable moreOptions">
                 <button title="Undo (remove last action from canvas)">
-                    <img src="images/undo-svgrepo-com.svg" className="invert" />
+                    <img src="images/selfmade/undo.svg" className="invert" />
                 </button>
                 <button title="Redo (add back last removed action to canvas)">
-                    <img src="images/undo-svgrepo-com.svg" className="invert mirrorX" />
+                    <img src="images/selfmade/redo.svg" className="invert" />
                 </button>
             </div>
             </div>
