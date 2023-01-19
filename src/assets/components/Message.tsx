@@ -1,4 +1,4 @@
-import "./styles/Message.css"
+//import "./styles/Message.css"
 
 type messageProps = {
     message: string,

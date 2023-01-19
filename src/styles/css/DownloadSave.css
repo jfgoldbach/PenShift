@@ -1,0 +1,26 @@
+.saveContainer {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+@media screen and (max-width: 900px) {
+  .saveContainer {
+    height: auto;
+    align-items: center;
+    display: none;
+  }
+}
+
+.saveBtn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.saveContainer button img {
+  width: 25px;
+  opacity: 0.75;
+  transition: opacity 0.15s;
+}

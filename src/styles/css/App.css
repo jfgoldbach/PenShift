@@ -1,0 +1,137 @@
+.App {
+  width: 100vw;
+  height: 100vh;
+  background-color: #151515;
+}
+
+input[type=color] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+input[type=color]::-webkit-color-swatch,
+input[type=color]::-moz-color-swatch {
+  border-radius: 8px;
+  border: none;
+  transition: 0.1s;
+}
+
+input[type=color]:hover::-webkit-color-swatch,
+input[type=color]:hover::-moz-color-swatch:hover {
+  border: 2px solid #777;
+  outline: 1px solid #ddd;
+  transition: 0.1s;
+}
+
+input[type=number],
+input {
+  background-color: #191919;
+  /*border: 1px solid $darkMedium*/
+  border: none;
+  border-radius: 5px;
+}
+
+input[type=text] {
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 1rem;
+  border: none;
+  background-color: #191919;
+  text-align: center;
+  max-width: 100%;
+}
+@media screen and (max-width: 900px) {
+  input[type=text] {
+    font-size: 1.25rem;
+  }
+}
+
+input[type=checkbox] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+select {
+  text-align: center;
+  border: 1px solid #555;
+  border-radius: 5px;
+  background-color: #191919;
+  padding: 3px;
+}
+
+input {
+  padding: 4px;
+}
+
+input[type=range] {
+  padding: 0;
+  -webkit-appearance: none;
+  height: 10px;
+  cursor: pointer;
+  background: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  border: 1px solid #777;
+  background: #191919;
+  box-shadow: 2px 2px 5px -6px white inset, -2px -2px 5px -2px black inset;
+  margin-top: -6px;
+}
+input[type=range]::-moz-range-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  border: 1px solid #777;
+  background: #191919;
+  box-shadow: 2px 2px 5px -6px white inset, -2px -2px 5px -2px black inset;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 2px;
+  background: #aaa;
+  box-shadow: 0 2px 5px #191919;
+}
+input[type=range]::-moz-range-track {
+  height: 3px;
+  border-radius: 2px;
+  background: #aaa;
+  box-shadow: 0 2px 5px #191919;
+}
+
+input[type=range]:active {
+  cursor: grabbing;
+}
+
+label {
+  font-size: 0.85rem;
+  color: #b5b5b5;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  line-height: 1.25rem;
+}
+
+button {
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  font-size: 1.33rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

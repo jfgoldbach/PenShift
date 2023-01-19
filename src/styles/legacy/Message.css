@@ -1,0 +1,51 @@
+.messageContainer {
+  position: absolute;
+  left: 50%;
+  background-color: var(--successTrans);
+  min-width: 250px;
+  border-radius: 12px;
+  text-align: center;
+  transform: translateX(-50%);
+  -webkit-animation: messageIn 1.5s forwards;
+          animation: messageIn 1.5s forwards;
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+  border: 1px solid var(--darkMedium);
+  z-index: 100;
+}
+
+@-webkit-keyframes messageIn {
+  from {
+    top: -100px;
+  }
+  30% {
+    top: 65px;
+  }
+  70% {
+    top: 65px;
+  }
+  85% {
+    top: 70px;
+  }
+  to {
+    top: -100px;
+  }
+}
+
+@keyframes messageIn {
+  from {
+    top: -100px;
+  }
+  30% {
+    top: 65px;
+  }
+  70% {
+    top: 65px;
+  }
+  85% {
+    top: 70px;
+  }
+  to {
+    top: -100px;
+  }
+}

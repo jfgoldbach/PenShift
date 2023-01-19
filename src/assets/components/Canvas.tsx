@@ -1,54 +1,60 @@
 import { useRef, useEffect, useState, useContext } from "react"
 import { areEqualArrays, hexToRgb, rgbToHex } from "../helper/helperFunctions"
-import { ResolutionPreset } from "./ResolutionPreset"
-import "./styles/Canvas.css"
-import { stateContext, toolType } from "./Viewport"
+import { rgbColor, toolType, undoRedoObj } from "../types/types"
+import { CreatePrompt } from "./CreatePrompt"
+import { heightForFill } from "./FrequentlyUsedFunctions"
+//import "./styles/Canvas.css"
+import { stateContext } from "./Viewport"
 
 
-type rgbColor = [r:number, g:number, b:number]
 
-//its getting messy: outsource more code to their own components
-
+//its getting verbose: put (stateful) logic in importable functions
 export function Canvas() {
-    const {resolution, brushOpacity, setResolution, frontColor, setFrontColor, brushSize, zoom, setZoom, tool, setTool, projName, setProjName, eraseType, containerTrans, setContainerTrans} = useContext(stateContext)
+    const {resolution, brushOpacity, frontColor, setFrontColor, brushSize, 
+        zoom, setZoom, tool, projName, eraseType, containerTrans, setRename,
+        setContainerTrans, waiting, setWaiting, undoPos} = useContext(stateContext)
 
-    const canvasRef = useRef<HTMLCanvasElement>()
-    const undoCanvasRef = useRef<HTMLCanvasElement>()
-    const paintVisRef = useRef<HTMLCanvasElement>()
-    const canvasContainerRef = useRef<HTMLDivElement>()
-    const wrapperRef = useRef<HTMLDivElement>()
-    const resX = useRef<HTMLInputElement>()
-    const resY = useRef<HTMLInputElement>()
+
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const undoCanvasRef = useRef<HTMLCanvasElement>(null)
+    const paintVisRef = useRef<HTMLCanvasElement>(null)
+    const canvasContainerRef = useRef<HTMLDivElement>(null)
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const resX = useRef<HTMLInputElement>(null)
+    const resY = useRef<HTMLInputElement>(null)
 
     const [back, setBack] = useState(true)
     const [preset, setPreset] = useState("Widescreen")
     const [inzoom, setInzoom] = useState(false)
-    //const [containerTrans, setContainerTrans] = useState<[number,number]>([0,0])
     const [pickedColor, setPickedColor] = useState<string>()
     const [previewImg, setPreviewImg] = useState<string>()
     const [originalZoom, setOriginalZoom] = useState<number>(100)
+    const [timetravel, setTimetravel] = useState<undoRedoObj>()
 
     const mousedown = useRef(false)
-    const lastPos = useRef<[number, number]>() //is used for drawing and moving the canvas
+    //const lastPos = useRef<[number, number]>() //is used for drawing on, and moving the canvas
+    let lastPos: [number, number] |undefined
     const pickedColorRef = useRef<string>()
     const eraserTypeRef = useRef<string>()
     const brushSizeRef = useRef<number>()
     const brushOpacityRef = useRef<number>()
     const size = useRef<number>()
-    const color = useRef<string>()
+    const color = useRef<[string, string]>()
     const curTool = useRef<toolType>()
     const containerTransRef = useRef<[number,number]>([0,0])
-    const zoomRef = useRef<number>()
+    const zoomRef = useRef<string>()
 
 
 
     class queue {
         pixel: [number,number][]
         maxlength: number
+        messageOnOverflow: string
 
-        constructor(firstEntry:[x:number,y:number], maxlength: number){
+        constructor(firstEntry:[x:number,y:number], maxlength: number, messageOnOverflow: string = "Queue Overflow"){
             this.pixel = [firstEntry]
             this.maxlength = maxlength
+            this.messageOnOverflow = messageOnOverflow
         }
 
         get queue(){
@@ -64,8 +70,8 @@ export function Canvas() {
                 //console.log( "length: ", this.pixel.length)
             } else {
                 console.error(`Queue overflow! Maximal number of entries has been reached: ${this.maxlength}. Queue has been emptied.`)
-                console.log(this.pixel)
                 this.pixel = []
+                window.alert(this.messageOnOverflow)
             }
         }
 
@@ -97,16 +103,26 @@ export function Canvas() {
 
         noDuplicate(x:number, y:number){
             //return this.pixel.filter(i => (i[0] === x && i[1] === y)).length === 0 //is slow.
+            //return this.pixel.every(i => !(i[0] === x && i[1] === y)) // a lot faster but still slower than forEach
             let dupli = true
-            this.pixel.forEach(i => {
-                if(i[0] === x && i[1] === y){
+            //this.pixel.forEach(i => { //problem: forEach wont stop searching until the last item is reached, which may slow it down
+            //    if(i[0] === x && i[1] === y){
+            //        dupli = false
+            //    }
+            //});
+            for(let i = 0; i<this.length(); i++){
+                if(this.pixel[i][0] === x && this.pixel[i][1] === y){
                     dupli = false
+                    break
                 }
-            });
+                if(!dupli){
+                    console.log("this is wrong")
+                }
+            }
             return dupli
+            
         }
     }
-
 
     //update pipette overlay
     useEffect(() => {
@@ -161,6 +177,7 @@ export function Canvas() {
 
     useEffect(() => {
         brushSizeRef.current = brushSize
+        centerPaintVis()
     }, [brushSize])
 
     useEffect(() => {
@@ -186,18 +203,28 @@ export function Canvas() {
 
     //event listeners
     useEffect(() => {
-        document.addEventListener("mousedown", (e) => {
+        document.addEventListener("pointerdown", (e) => {
             if(e.target === wrapperRef.current || e.target === canvasRef.current){
                 actionOnClick(e)
                 mousedown.current = true
+                if(paintVisRef.current){
+                    paintVisRef.current.style.display = "block"
+                }
+                if(paintVisRef.current){
+                    movePaintVis(e)
+                }
             }
         })
-        document.addEventListener("mouseup", () => {
-            lastPos.current = undefined
+        document.addEventListener("pointerup", () => {
+            lastPos = undefined
             mousedown.current = false
             updatePreviewImg()
+            if(paintVisRef.current && window.innerWidth < 900){
+                paintVisRef.current.style.display = "none"
+            }
         })
-        document.addEventListener("mousemove", (e) => {
+        document.addEventListener("pointermove", (e) => {
+            //console.log("pointermove")
             if(e.target === wrapperRef.current || e.target === canvasRef.current){
                 if(mousedown.current){
                     actionOnClick(e)
@@ -230,12 +257,13 @@ export function Canvas() {
                     break
             }
         }
+        const zoomLevel = typeof zoom[0] === "number"? zoom[0] : parseFloat(zoom[0])
         if(zoom[0] && canvasContainerRef.current && resolution && wrapperRef.current){
             canvasContainerRef.current.style.height = zoom[0] + "%"
-            canvasContainerRef.current.style.width = `${wrapperRef.current.clientHeight * (zoom[0]/100) * (resolution[0]/resolution[1])}px`
+            canvasContainerRef.current.style.width = `${wrapperRef.current.clientHeight * (zoomLevel/100) * (resolution[0]/resolution[1])}px`
         }
         if(zoom[0]){
-            zoomRef.current = zoom[0]
+            zoomRef.current = (zoom[0]).toString()
         }
         updatePaintVisSize()
     }, [zoom])
@@ -256,8 +284,12 @@ export function Canvas() {
             }
 
             const wrapper = wrapperRef.current
-            if(wrapper && canvasContainerRef.current){
-                setZoom([Math.round((resolution[1] * 1000) / wrapper.clientHeight)/10, "original"])
+            if(inzoom){
+                setZoom([heightForFill(resolution[1]), "fill"])
+            } else {
+                if(wrapper && canvasContainerRef.current){
+                    setZoom([Math.round((resolution[1] * 1000) / wrapper.clientHeight)/10, "original"])
+                }
             }
             updatePaintVisSize()
             if(wrapperRef.current){
@@ -268,16 +300,46 @@ export function Canvas() {
     
 
 
-    function updatePreviewImg() {
+    function saveToTimetravel (data: ImageData) { //undo & redo
+        const undos = 3
+        const redos = 3
+        let ops
+        if(timetravel === undefined){ 
+            //no undos/redos yet
+            setTimetravel([data])
+        } else {
+            ops = timetravel
+            ops.push(data)
+            if(timetravel && ops){
+                //check if there are too many undos/redos
+                if(undoPos > undos - 1){
+                    ops.shift()
+                } 
+                else if (ops.length - undoPos > redos - 1){pickedColor
+                    ops.pop()
+                }
+            }
+            setTimetravel(ops)
+        }
+    }
+
+    //function undo () {
+    //    const canvas = canvasRef.current
+    //    if(canvas && timetravel && timetravel.operations.length > 0 && timetravel.position !== 0){
+    //        canvas.getContext("2d")?.putImageData(timetravel.operations[timetravel.position - 1], 0, 0)
+    //    }
+    //}
+
+    function updatePreviewImg () {
         const canvas = canvasRef.current
         if(canvas){
-            const img = canvas.toDataURL("image/jpg", 0.1)
+            const img = canvas.toDataURL("image/webp", 0.1) //maybe adjust picture type, so that every browser supports it for sure
             setPreviewImg(img)
-            const documentIcon = document.getElementById("documentIcon")
+            const documentIcon = document.getElementById("documentIcon") as HTMLLinkElement
             if(documentIcon){
                 documentIcon.href = img
             }
-            const dwnImg: HTMLImageElement | null = document.getElementById("saveImg")
+            const dwnImg = document.getElementById("saveImg") as HTMLImageElement
             if(dwnImg){
                 dwnImg.src = img
                 //dwnImg.style.aspectRatio = `${resolution[0]}/${resolution[1]}`
@@ -298,26 +360,22 @@ export function Canvas() {
                         break
                 }
                 break
-
-            case "brush":
-                drawLine(e)
-                break
-
-            case "pipette":
-                pickColor(e)
-                break
-
-            case "move":
-                moveCanvas(e)
-                break
+            case "brush": drawLine(e); break
+            case "pipette": pickColor(e); break
+            case "move": moveCanvas(e); break
             case "fill":
-                const pos = getMouseCanvasPos(e)
-                const canvas = canvasRef.current
-                const context = canvas?.getContext("2d")
-                const fillColor = hexToRgb(color.current[0])
-                if(canvas && context && pos && pos[0] && pos[1] && fillColor){
-                    fill(context, canvas, Math.floor(pos[0]), Math.floor(pos[1]), context.getImageData(pos[0], pos[1], 1, 1).data, fillColor)
-                }
+                setWaiting(true)
+                setTimeout(() => {
+                    if(color.current){
+                        const pos = getMouseCanvasPos(e)
+                        const canvas = canvasRef.current
+                        const context = canvas?.getContext("2d")
+                        const fillColor = hexToRgb(color.current[0])
+                        if(canvas && context && pos && pos[0] && pos[1] && fillColor){
+                            fill(context, canvas, Math.floor(pos[0]), Math.floor(pos[1]), context.getImageData(pos[0], pos[1], 1, 1).data, fillColor)
+                        }
+                    }
+                }, 0); //timeout will be called after waiting state is set to true
                 break
         }
     }
@@ -325,14 +383,15 @@ export function Canvas() {
     
 
 
-    //recursive flood fill algo
+    //recursive flood fill algo 
+    //Remark: reacts strict mode causes queue overflows!
     function fill(context:CanvasRenderingContext2D, canvas:HTMLCanvasElement, initX:number, initY:number, removeColor:Uint8ClampedArray, fill:rgbColor){
         //initializing data, that with the recursive habit of floodFill() would be generated over and over again without changing
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
         const remove:rgbColor = [removeColor[0], removeColor[1], removeColor[2]]
         const fillColor = [...fill, 255] //add transparency
-        const list = new queue([initX, initY], 3000)
-
+        const errorMsg = "Area too large to fill completly. As much as possible will be filled. Please try again or choose a smaller area!"
+        const list = new queue([initX, initY], 3000, errorMsg)
 
         //return true if pixel is in canvas and has right color
         function isPixelFillable (x: number, y: number){
@@ -386,6 +445,8 @@ export function Canvas() {
         }
 
         context.putImageData(imageData, 0, 0)
+        updatePreviewImg()
+        setWaiting(false)
     }
 
 
@@ -405,26 +466,28 @@ export function Canvas() {
 
     //change translation of canvas
     function moveCanvas (e: MouseEvent){
-        if(lastPos.current && canvasContainerRef.current){
+        if(lastPos && canvasContainerRef.current){
             const container = canvasContainerRef.current
-            const difX = e.clientX - lastPos.current[0]
-            const difY = e.clientY - lastPos.current[1]
-            setContainerTrans(prev => [difX + prev[0], difY + prev[1]]) //useEffect then handles the styling
-            lastPos.current = [e.clientX, e.clientY]
+            const difX = e.clientX - lastPos[0]
+            const difY = e.clientY - lastPos[1]
+            setContainerTrans((prev: [number, number]) => [difX + prev[0], difY + prev[1]]) //useEffect then handles the styling
+            lastPos = [e.clientX, e.clientY]
         } else {
-            lastPos.current = [e.clientX, e.clientY]
+            lastPos = [e.clientX, e.clientY]
         }
     }
 
     //change color based on mouseclick
     function pickColor(e: MouseEvent) {
         if(mouseInCanvas(e)){
-            switch(e.button){
-                case 0:
-                    setFrontColor(prev => [pickedColorRef.current, prev[1]])
-                    break
-                case 2:
-                    setFrontColor(prev => [prev[0], pickedColorRef.current])
+            const color = pickedColorRef.current
+            if(color){
+                switch(e.button){
+                    case 0:
+                        setFrontColor((prev: [string, string]) => [color, prev[1]]); break
+                    case 2:
+                        setFrontColor((prev: [string, string]) => [prev[0], color]); break
+                }
             }
         }
     }
@@ -440,7 +503,8 @@ export function Canvas() {
 
             if(canvasCtx && inCanvas && pos && pos[0] && pos[1]){
                 const data = canvasCtx.getImageData(pos[0], pos[1], 1, 1).data
-                setPickedColor(rgbToHex(data[0], data[1], data[2]))
+                const color = rgbToHex(data[0], data[1], data[2])
+                setPickedColor(color)
             }
         }
     }
@@ -451,11 +515,34 @@ export function Canvas() {
             const left = wrapperRef.current.offsetLeft
             const top = wrapperRef.current.offsetTop
             const vis = paintVisRef.current
-
-            if(left && top && vis && canvasRef.current){
+            if(vis && left !== undefined && top !== undefined && vis !== undefined){
                 vis.style.left = `${e.clientX - left - vis.width/2}px`
                 vis.style.top = `${e.clientY - top - vis.height/2}px`
-                //vis.style.height = `${brushSizeRef.current * canvasRef.current.clientHeight/canvasRef.current.height}px`
+            }
+        }
+    }
+
+    function centerPaintVis () {
+        const wrapper = wrapperRef.current
+        if(wrapper){
+            if(window.innerHeight < 900){
+                const left = (wrapper.clientWidth - wrapper.offsetLeft) / 2
+                const top = (wrapper.clientHeight - wrapper.offsetTop) / 2
+                const vis = paintVisRef.current
+
+                if(left && top && vis && canvasRef.current){
+                    vis.style.left = `${left - vis.width/2}px`
+                    vis.style.top = `${top - vis.height/2}px`
+                }
+            } else {
+                const left = wrapper.clientWidth / 2
+                const top = wrapper.clientHeight / 2
+                const vis = paintVisRef.current
+
+                if(left && top && vis && canvasRef.current){
+                    vis.style.left = `${left - vis.width/2}px`
+                    vis.style.top = `${top - vis.height/2}px`
+                }
             }
         }
     }
@@ -469,10 +556,11 @@ export function Canvas() {
                 case "brush":
                 case "eraser":
                     //brush size normalized to canvas pixel size on screen:
-                    if(wrapperRef.current){
-                        size = parseInt(brushSize) * ((wrapperRef.current.clientHeight * zoom[0]/100)/resolution[1]) + 2
+                    const brushWidth = typeof brushSize === "number"? brushSize : parseFloat(brushSize)
+                    if(wrapperRef.current && resolution){
+                        size = brushWidth * ((wrapperRef.current.clientHeight * zoom[0]/100)/resolution[1]) + 2
                     } else {
-                        size = parseInt(brushSize)
+                        size = brushWidth
                     }
                     break
                 case "pipette":
@@ -513,17 +601,9 @@ export function Canvas() {
 
     //size the container to fill the most available space without overlappint the toolbars
     function zoomFillScreen () {
-        if(resolution && resolution[0] && resolution[1] && canvasContainerRef.current){
-            if(wrapperRef.current && resolution[1] >= wrapperRef.current.clientHeight){
-                //initial resolution is larger than viewport
-                canvasContainerRef.current.style.height = "99%"
-            } else {
-                canvasContainerRef.current.style.width = "99%"
-                if(wrapperRef.current && canvasContainerRef.current.clientHeight >= wrapperRef.current.clientHeight){
-                    //scaled to viewport sides results in height being more than viewport height: adjust height
-                    canvasContainerRef.current.style.height = "99%"
-                }
-            }
+        const container = canvasContainerRef.current
+        if(container){
+            container.style.height = `${zoom[0]}`
         }
     }
 
@@ -544,7 +624,7 @@ export function Canvas() {
         if(canvas && container && wrapper && zoomR){
             const top = container.offsetTop + wrapper.offsetTop
 
-            const canvasWidth = canvas.width * ((wrapper.clientHeight * (zoomR/100))/canvas.height) //.width = real canvas resolution width
+            const canvasWidth = canvas.width * ((wrapper.clientHeight * (parseFloat(zoomR)/100))/canvas.height) //.width = real canvas resolution width
             const left = (wrapper.clientWidth - canvasWidth)/2 + wrapper.offsetLeft
 
             const transform = containerTransRef.current
@@ -553,6 +633,7 @@ export function Canvas() {
             if(left && top && canvas){ //normalises positions to canvas native resolution coordinates
                 x = (e.clientX - left - transform[0]) * (canvas.width/canvas.clientWidth)
                 y = (e.clientY - top - transform[1]) * (canvas.height/canvas.clientHeight)
+                //console.log([e.clientX, left, transform[0], canvas.width/canvas.clientWidth], [e.clientY, top, transform[1], canvas.height/canvas.clientHeight])
             }
 
             return([x, y])
@@ -573,7 +654,6 @@ export function Canvas() {
         const opactiy = brushOpacityRef.current
 
         if(context && x && y && opactiy){
-            //context.imageSmoothingEnabled = false
             if(color.current && curTool.current){
                 //change to foreground or background color
                 switch(curTool.current){
@@ -593,15 +673,15 @@ export function Canvas() {
             context.lineCap = "round"
             context.beginPath()
             
-            if(!lastPos.current){ //it hasnt been drawn on this mousedown yet
+            if(!lastPos){ //it hasnt been drawn on this mousedown yet
                 context.moveTo(x, y)
             } else { //this path begins at last position
-                context.moveTo(lastPos.current[0], lastPos.current[1])
+                context.moveTo(lastPos[0], lastPos[1])
             }
 
-            context.lineTo(x, y)
-            context.stroke()
-            lastPos.current = [x, y]
+            context.lineTo(x+0.0001, y+0.0001)  //addition of small number is for safari/iOS, because...
+            context.stroke()                    //...it wouldn't render the path when beginning and ending at same location
+            lastPos = [x, y]
         }
     }
 
@@ -623,56 +703,30 @@ export function Canvas() {
     }
 
 
-    //A bunch of changing functions:
-    function changeCheck () {
-        setBack(prev => !prev)
-    }
-
-    function changeBackground (e) {
-        setFrontColor(prev => [prev[0], e.target.value])
-    }
-
-    function createProj () {
-        if(resX.current && resY.current){
-            setResolution([parseInt(resX.current.value), parseInt(resY.current.value)])
-        }
-    }
-
-    function changePreset (e) {
-        setPreset(e.target.value)
-    }
-
-    function changeZoom (e) {
-        setZoom(prev => [prev[0], e.target.value === true? "Fill screen" : "-"])
-    }
-
-    function changeProjName (e) {
-        setProjName(e.target.value)
-    }
-
 
 
     return (
-        <div ref={wrapperRef} id="canvasWrapper" className={`canvasWrapper ${(tool && resolution)? `canvasWrapper_${tool}` : ""}`}>
+        <div ref={wrapperRef} id="canvasWrapper" className={`canvasWrapper ${waiting? "waiting" : ""} ${(tool && resolution)? `canvasWrapper_${tool}` : ""}`}>
             {resolution ?
             <>
                 <div
-                    ref={canvasContainerRef}
-                    className={`
-                        canvasContainer 
-                        ${tool? `canvasContainer_${tool}` : ""} 
-                        ${mousedown.current? "noTransition" : ""}
-                    `}
-                    >
-                    <canvas className={`mainCanvas ${zoom[0] > originalZoom ? "pixalated" : ""}`} ref={canvasRef} id="canvas">
+                id="canvasContainer"
+                ref={canvasContainerRef}
+                className={`
+                    canvasContainer 
+                    ${tool? `canvasContainer_${tool}` : ""} 
+                    ${mousedown.current? "noTransition" : ""}
+                `}
+                >
+                    <canvas className={`mainCanvas bg-trans ${zoom[0] > originalZoom ? "pixalated" : ""}`} ref={canvasRef} id="canvas">
                         :/ Canvas can't be rendered: Try to enable JavaScript or use a different browser!
                     </canvas>
+                    {/*<div className="pixelgrid absolute-fill"></div>*/}
                     <canvas ref={undoCanvasRef} id="undoCanvas" className="undoCanvas"></canvas>
                 </div>
-                <canvas 
-                        ref={paintVisRef}
-                        className="paintVisCanvas"
-                    ></canvas>
+
+                <canvas ref={paintVisRef} className="paintVisCanvas"></canvas>
+
                 {(tool === "move" || zoom[0] > 140) &&
                     <div className={`locationMapContainer ${zoom[0] > 100 ? "locationMapContainer-visible" : ""}`}>
                         {zoom[0] > 100 && previewImg &&
@@ -693,126 +747,33 @@ export function Canvas() {
                         }
                     </div>
                 }
+
+            {waiting &&
+                <div className="waitingVis">
+                    {/*<img src="images/loading.png" />*/}
+                    <div className="waitingVisTextContainer">
+                        <p className="waitingVisText">Filling area</p>
+                        <p className="waiting1">.</p>
+                        <p className="waiting2">.</p>
+                        <p className="waiting3">.</p>
+                    </div>
+                </div>
+            }
                 
             </>
-
             :
-
-            <div className="newProject">
-                <div className="createPart">
-                    <h1 className="">Create a new project</h1>
-                    <div className="newProjMain">
-                        <label title="The name is displayed on the browsers tab card, inside the app and it's used to save the image under that name.">
-                            Project name
-                            <input type="text" placeholder="(optional)" value={projName} onChange={changeProjName}></input>
-                        </label>
-                        <div className="inputs">
-                            <div className="inputPixels" title="Set the width of your project">
-                                <span>↔</span>
-                                <input ref={resX} type="number" defaultValue={Math.round(window.innerWidth*0.75/480)*480}></input>
-                                <span>px</span>
-                            </div>
-                            <div className="inputPixels" title="Set the height of your project">
-                                <span>↕</span>
-                                <input ref={resY} type="number" defaultValue={Math.round(window.innerHeight*0.75/360)*360}></input>
-                                <span>px</span>
-                            </div>
-                        </div>
-                        <div className="inputs">
-                            <div className="inputBack" title="Change if the project should initially have a background or be transparent">
-                                <input type="checkbox" id="check" checked={back} onChange={changeCheck}></input>
-                                <span className={back? "showBack" : "showLineThrough"}>Background</span>
-                                {back
-                                    ? <input type="color" value={frontColor[1]} onChange={changeBackground}></input>
-                                    : <div className="showTrans"></div>
-                                }
-                            </div>
-                            <div className="inputBack" title="(Fill screen) If the image should fill the most possible space of the viewport without overlapping">
-                                <input type="checkbox" value={zoom[1] === "Fill screen"} onChange={changeZoom} />
-                                <span className={inzoom? "showBack" : "showLineThrough"}>Zoom to viewport</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" className="createBtn" onClick={createProj}>Create</button>
-                </div>
-                
-                <div className="resPresets">
-                    <div className="resPresets_header">
-                        <h1 className="">Resolution presets:</h1>
-                        <select onChange={changePreset}>
-                            <option>Widescreen</option>
-                            <option>Square</option>
-                            <option>iPhone</option>
-                            <option>iPhone Plus/Pro/Max</option>
-                            <option>iPhone mini/SE</option>
-                        </select>
-                    </div>
-                    
-                        {preset === "Widescreen" &&
-                            <div className="resPresContainer">
-                                <ResolutionPreset name="QHD" resolution={[640, 360]} change={[resX, resY]} />
-                                <ResolutionPreset name="720p" resolution={[1280, 720]} change={[resX, resY]} />
-                                <ResolutionPreset name="FHD" resolution={[1920, 1080]} change={[resX, resY]} />
-                                <ResolutionPreset name="WQHD" resolution={[2560, 1440]} change={[resX, resY]} />
-                                <ResolutionPreset name="UHD 4K" resolution={[3840, 2160]} change={[resX, resY]} />
-                                <ResolutionPreset name="FUHD 8K" resolution={[7680, 4320]} change={[resX, resY]} />
-                            </div>
-                        }
-                        {preset === "Square" &&
-                            <div className="resPresContainer">
-                                <ResolutionPreset name="Tiny" resolution={[64, 64]} change={[resX, resY]} />
-                                <ResolutionPreset name="Small" resolution={[256, 256]} change={[resX, resY]} />
-                                <ResolutionPreset name="Medium" resolution={[512, 512]} change={[resX, resY]} />
-                                <ResolutionPreset name="Standard" resolution={[1024, 1024]} change={[resX, resY]} />
-                                <ResolutionPreset name="Large" resolution={[2048, 2048]} change={[resX, resY]} />
-                                <ResolutionPreset name="XL" resolution={[4096, 4096]} change={[resX, resY]} />
-                            </div>
-                        }
-                        {preset === "iPhone" &&
-                            <div className="resPresContainer">
-                                <ResolutionPreset name="4, 4s" resolution={[640, 960]} change={[resX, resY]} />
-                                <ResolutionPreset name="5, 5s" resolution={[640, 1136]} change={[resX, resY]} />
-                                <ResolutionPreset name="6-8" resolution={[750, 1334]} change={[resX, resY]} />
-                                <ResolutionPreset name="X, XS" resolution={[1125 ,2436]} change={[resX, resY]} />
-                                <ResolutionPreset name="XR, 11" resolution={[828, 1792]} change={[resX, resY]} />
-                                <ResolutionPreset name="12-14" resolution={[1170, 2532]} change={[resX, resY]} />
-                            </div>
-                        }
-                        {preset === "iPhone Plus/Pro/Max" &&
-                            <div className="resPresContainer">
-                                <ResolutionPreset name="6-8 Plus" resolution={[1242, 2208]} change={[resX, resY]} />
-                                <ResolutionPreset name="XS Max" resolution={[1242, 2688]} change={[resX, resY]} />
-                                <ResolutionPreset name="11 Pro/Max" resolution={[1242, 2688]} change={[resX, resY]} />
-                                <ResolutionPreset name="12/13 Pro" resolution={[1170, 2532]} change={[resX, resY]} />
-                                <ResolutionPreset name="12/13 Max" resolution={[1284, 2778]} change={[resX, resY]} />
-                                <ResolutionPreset name="14 Plus" resolution={[1284, 2778]} change={[resX, resY]} />
-                                <ResolutionPreset name="14 Pro" resolution={[1179, 2556]} change={[resX, resY]} />
-                                <ResolutionPreset name="14 Max" resolution={[1290, 2796]} change={[resX, resY]} />
-                            </div>
-                        }
-                        {preset === "iPhone mini/SE" &&
-                            <div className="resPresContainer">
-                                <ResolutionPreset name="SE 2016" resolution={[640, 1136]} change={[resX, resY]} />
-                                <ResolutionPreset name="SE 2020/22" resolution={[750, 1334]} change={[resX, resY]} />
-                                <ResolutionPreset name="12/13 mini" resolution={[1080, 2340]} change={[resX, resY]} />
-                            </div>
-                        }
-                    
-                </div>
-            </div>
+            <CreatePrompt back={back} setBack={setBack} resX={resX} resY={resY} setInzoom={setInzoom} preset={preset} setPreset={setPreset} />
             }
             
             <div className={resolution && resolution[0] && resolution[1]? "canvasInfo" : "canvasInfo_invis canvasInfo"}>
-                {projName !== "" &&
-                    <span title="Your projects name">{projName} </span>
-                }
+                <span className="projName" title="Your projects name (click to rename)" onClick={() => setRename(true)}>{projName !== ""? projName : <i>Unnamed</i>}</span>
                 {resolution && resolution[0] && resolution[1] &&
                 <>
                     <span title="The resolution of this canvas">
                         {`${resolution[0]}×${resolution[1]}`}
                     </span>
                     <span title="Aproximated raw size">
-                        {`~${Math.round((resolution[0] * resolution[1] * 4)/10000)/100}MB`}
+                        {`${Math.round((resolution[0] * resolution[1] * 4)/10000)/100}MB`}
                     </span>
                 </>
                 }

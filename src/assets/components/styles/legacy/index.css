@@ -1,8 +1,5 @@
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -26,7 +23,11 @@
   --darkLight: #ddd;
   --Light: #fff;
 
+  --abort: rgb(255, 102, 75);
+
   --successTrans: rgba(53, 106, 62, 0.75);
+
+  --toolBarWidth: 55px;
 }
 
 .debug{
@@ -64,7 +65,9 @@ h1 {
   line-height: 1.1;
 }
 
-button {
+
+.btn, 
+.closeBtn {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -76,16 +79,46 @@ button {
   transition: border-color 0.25s;
 }
 
+.closeBtn{
+  background-color: var(--abort);
+  font-size: 1.5rem;
+  padding: 0;
+  height: fit-content;
+  font-weight: bold;
+  transition: 0.1s;
+}
+.closeBtn:hover{
+  box-shadow: 0 0 15px var(--abort);
+  background-color: rgb(255, 178, 178);
+  color: red;
+}
+
 .aspectCube{
   aspect-ratio: 1/1;
 }
 
-button:hover {
+.pixalated{
+  image-rendering: pixelated;
+}
+
+p{
+  margin: 0;
+}
+
+.fadeIn{
+  animation: fadeIn 0.33s;
+}
+@keyframes fadeIn {
+  from{opacity: 0;}
+  to{opacity: 1;}
+}
+
+.btn:hover {
   border-color: #646cff;
   box-shadow: 0 0 10px rgba(158, 163, 255, 0.25);
 }
-button:focus,
-button:focus-visible {
+.btn:focus,
+.btn:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
@@ -93,8 +126,8 @@ input, select{
   color: var(--lighterMedium)
 }
 
-input:hover, input:focus,
- select:hover, select:focus{
+input:not(.unavailable):hover, input:not(.unavailable):focus,
+select:hover, select:focus{
   color: var(--Light);
   border-color: #646cff;
   box-shadow: 0 0 10px rgba(158, 163, 255, 0.33);
@@ -106,9 +139,41 @@ input:hover, input:focus,
 }
 
 .unavailable{
-  opacity: 0.4;
+  opacity: 0.33;
   filter: saturate(0);
   pointer-events: none;
+}
+
+.info{
+  width: 0.85rem;
+  opacity: 0.75;
+  cursor: help;
+}
+
+.prompt{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--lightDark);
+  border-radius: 12px;
+  box-shadow: 0 0 10px black;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.bg-trans{
+  background-image: url(/images/transback.jpg);
+}
+
+.absolute-fill{
+  position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -119,7 +184,7 @@ input:hover, input:focus,
   a:hover {
     color: #747bff;
   }
-  button {
+  .btn {
     background-color: #f9f9f9;
   }
 }
@@ -128,5 +193,9 @@ input:hover, input:focus,
   body{
     height: var(--mobileHeight);
     overflow: hidden;
+  }
+
+  .prompt{
+    max-width: 95vw;
   }
 }

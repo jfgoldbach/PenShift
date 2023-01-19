@@ -7,6 +7,9 @@
     width: 100%;
     overflow: hidden;
 }
+.firstPart{
+    display: flex;
+}
 .secondPart{
     display: flex;
     background-color: var(--lightDark);

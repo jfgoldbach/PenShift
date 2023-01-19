@@ -5,6 +5,7 @@
     align-items: center;
     flex-grow: 1;
     background-color: #444;
+    background-image: url(/images/background2.png);
     border: 1px solid var(--darkMedium);
     border-width: 1px 0 0 1px;
     --shadow: 5px 5px 10px rgba(0,0,0,0.125);
@@ -147,7 +148,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: auto;
     transition: 0.2s;
 }
 .noTransition{
@@ -169,7 +169,6 @@
 
 
 .mainCanvas{
-    background-image: url(../backgrounds/transback.jpg);
     border: 1px solid #aaa;
     box-shadow: var(--shadow);
     height: 100%;
@@ -195,6 +194,12 @@
     filter: drop-shadow(1px 1px 0 rgba(255,255,255,0.5));*/
 }
 
+.pixelgrid{
+    background-image: url(/images/pixelgrid_bg.png);
+    background-size: 1%;
+    pointer-events: none;
+}
+
 .pixalated{
     image-rendering: pixelated;
 }
@@ -210,6 +215,7 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     border: 1px solid var(--Medium);
     transition: 0.2s;
+    --outsideBackground: rgba(0,0,0,0.6);
 }
 .locationMap{
     background-image: url(../backgrounds/transback.jpg);
@@ -223,6 +229,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
+    border: 1px solid var(--darkLight);
     /*background-color: rgba(255,0,0,0.25);
     height: 50%;
     aspect-ratio: 16/9;
@@ -233,22 +240,20 @@
 .positionVis::before{
     content: '';
     position: absolute;
-    top: -1px;
-    left: 0;
-    height: 2px;
-    width: 100%;
-    backdrop-filter: invert(100%);
-    background-color: rgba(0,0,0,0.33);
+    bottom: calc(100% + 1px);
+    left: -2500px;
+    height: 3000px;
+    width: 5000px;
+    background-color: var(--outsideBackground);
 }
 .positionVis::after{
     content: '';
     position: absolute;
-    bottom: -1px;
-    left: 0;
-    height: 2px;
-    width: 100%;
-    backdrop-filter: invert(100%);
-    background-color: rgba(0,0,0,0.33);
+    top: calc(100% + 1px);
+    left: -2500px;
+    height: 3000px;
+    width: 5000px;
+    background-color: var(--outsideBackground);
 }
 .visSides{
     position: absolute;
@@ -260,22 +265,20 @@
 .visSides::before{
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 100%;
-    width: 2px;
-    backdrop-filter: invert(100%);
-    background-color: rgba(0,0,0,0.33);
+    bottom: -1px;
+    right: calc(100% + 1px);
+    height: calc(100% + 2px);
+    width: 2500px;
+    background-color: var(--outsideBackground);
 }
 .visSides::after{
     content: '';
     position: absolute;
-    bottom: 0;
-    right: 0;
-    height: 100%;
-    width: 2px;
-    backdrop-filter: invert(100%);
-    background-color: rgba(0,0,0,0.33);
+    bottom: -1px;
+    left: calc(100% + 1px);
+    height: calc(100% + 2px);
+    width: 2500px;
+    background-color: var(--outsideBackground);
 }
 
 
@@ -312,6 +315,77 @@
 .scaleFadeIn{
     animation: scaleFadeIn 0.2s
 }
+
+.waitingVisTextContainer{
+    display: flex;
+    margin: 0 20px;
+}
+.waitingVis{
+    position: absolute;
+    background-color: var(--Medium);
+    color: var(--lightDark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--Light);
+    padding: 6px;
+    min-height: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.33);
+    animation: waitingIn 0.1s forwards;
+}
+@keyframes waitingIn {
+    from{top: -50px}
+    to{top: 20px}
+}
+.waitingVisText{
+    letter-spacing: 0.033rem;
+}
+.waitingVis p{
+    margin: 0;
+}
+.waitingVis img{
+    filter: contrast(2);
+    height: 35px;
+    animation: loadingAnim 1s infinite steps(16);
+}
+@keyframes loadingAnim {
+    from{rotate: 0deg}
+    to {rotate: 360deg}
+}
+.waiting1{
+    animation: waiting1 1s infinite linear;
+    font-weight: bold;
+}
+@keyframes waiting1 {
+    from {opacity: 0;}
+    25% {opacity: 1;}
+    90% {opacity: 1;}
+    to {opacity: 0;}
+}
+.waiting2{
+    animation: waiting2 1s infinite linear;
+    font-weight: bold;
+}
+@keyframes waiting2 {
+    from {opacity: 0;}
+    25% {opacity: 0;}
+    50% {opacity: 1;}
+    90% {opacity: 1;}
+    to {opacity: 0;}
+}
+.waiting3{
+    animation: waiting3 1s infinite linear;
+    font-weight: bold;
+}
+@keyframes waiting3 {
+    from {opacity: 0;}
+    50% {opacity: 0;}
+    75% {opacity: 1;}
+    90% {opacity: 1;}
+    to {opacity: 0;}
+}
+
 
 @keyframes scaleFadeIn {
     from {scale: 0.5; opacity: 0;}

@@ -1,0 +1,475 @@
+@import global
+
+$shadow: 5px 5px 10px rgba(0,0,0,0.125)    
+
+.canvasWrapper
+    position: relative
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-grow: 1
+    background-color: #444
+    background-image: url(/images/background2.png)
+    border: 1px solid $darkMedium
+    border-width: 1px 0 0 1px
+    
+    border-top-left-radius: 16px
+    overflow: hidden
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.2) inset
+
+
+.canvasWrapper_brush
+    cursor: url(/images/selfmade/brush.png), auto
+
+.canvasWrapper_eraser
+    cursor: none
+
+.canvasWrapper_pipette
+    cursor: url(/images/selfmade/pipette.png), auto
+
+.canvasWrapper_fill
+    cursor: url(/images/selfmade/fill.png) 0 32, auto
+
+.canvasWrapper_text
+    cursor: url(/images/selfmade/text.png) 0 32, auto
+
+
+
+
+.newProject
+    display: flex
+    background-color: $lightDark
+    border-radius: 12px
+    box-shadow: $shadow
+
+
+.createPart
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: center
+    padding: 20px 30px
+
+.createPart > h1
+    font-size: 1.75rem
+    font-weight: normal
+    margin: 0
+
+.createPart > button
+    width: fit-content
+
+
+.newProjMain
+    display: flex
+    flex-direction: column
+    gap: 20px
+    align-items: center
+    padding: 30px 0
+    max-width: 100%
+    width: 100%
+
+.inputPixels input
+    width: 75px
+    font-size: 1.125rem
+
+
+.inputs
+    display: flex
+    flex-direction: column
+    gap: 7px
+
+
+.inputPixels
+    width: 60%
+    min-width: fit-content
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 5px
+    font-size: 1.125rem
+
+.inputPixels span
+    width: 1.25rem
+    text-align: center
+
+
+.showBack
+    color: $darkLight
+    transition: 0.15s
+    text-decoration: line-through
+    text-decoration-color: transparent
+
+.inputBack
+    display: flex
+    align-items: center
+    gap: 10px
+
+.showLineThrough
+    color: $darkMedium
+    text-decoration: line-through
+    text-decoration-color: $Medium
+    transition: 0.15s
+
+.showTrans
+    background-image: url(../backgrounds/transback.jpg)
+    width: 35px
+    height: 35px
+    border-radius: 8px
+    overflow: hidden
+
+
+.resPresets
+    padding: 30px 20px
+    display: flex
+    flex-direction: column
+    gap: 20px
+    border-left: 1px solid $darkMedium
+
+.resPresets_header
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+.resPresets_header > h1
+    margin: 0
+    font-size: 1rem
+    font-weight: normal
+    color: $Medium
+
+.resPresets_header select
+    max-width: 40%
+
+.resPresContainer
+    display: flex
+    gap: 10px
+    flex-wrap: wrap
+    width: 275px
+
+
+
+.canvasContainer
+    position: relative
+    display: flex
+    align-items: center
+    justify-content: center
+    transition: 0.2s
+
+.noTransition
+    transition: none
+
+.canvasContainer_eraser,
+.canvasContainer_brush
+    cursor: none
+
+.canvasContainer_pipette
+    cursor: url(/images/selfmade/pipette.png), auto
+
+.canvasWrapper_move
+    cursor: move
+
+.canvasContainer_pipette .paintVisCanvas
+    display: none
+.canvasContainer_pipette:hover .paintVisCanvas
+    display: block
+
+
+.mainCanvas
+    border: 1px solid #aaa
+    box-shadow: $shadow
+    height: 100%
+    cursor: inherit
+
+.undoCanvas
+    position: absolute
+    left: 1px
+    top: 1px
+    pointer-events: none
+    height: 100%
+    display: none
+
+.paintVisCanvas
+    position: absolute
+    top: 0
+    left: 0
+    pointer-events: none
+    filter: drop-shadow(0 0 1px rgba(white, 0.8))
+    @media screen and (max-width: $mobileBreakpoint)
+        display: none   //only shows when pressed down (changed in js)
+
+
+.pixelgrid
+    background-image: url(/images/pixelgrid_bg.png)
+    background-size: 1%
+    pointer-events: none
+
+
+.pixalated
+    image-rendering: pixelated
+
+
+.locationMapContainer
+    position: absolute
+    right: 2px
+    top: 2px
+    height: 14vh
+    opacity: 0
+    overflow: hidden
+    pointer-events: none
+    box-shadow: 0 0 10px rgba(0,0,0,0.5)
+    border: 1px solid $Medium
+    transition: 0.2s
+
+$outsideBackground: rgba(0,0,0,0.6)
+
+.locationMap
+    background-image: url(../backgrounds/transback.jpg)
+    height: 14vh
+    image-rendering: pixelated
+
+.locationMapContainer-visible
+    opacity: 0.8
+
+.positionVis
+    position: absolute
+    top: 50%
+    left: 50%
+    border: 1px solid $darkLight
+
+.positionVis::before
+    content: ''
+    position: absolute
+    bottom: calc(100% + 1px)
+    left: -2500px
+    height: 3000px
+    width: 5000px
+    background-color: $outsideBackground
+
+.positionVis::after
+    content: ''
+    position: absolute
+    top: calc(100% + 1px)
+    left: -2500px
+    height: 3000px
+    width: 5000px
+    background-color: $outsideBackground
+
+.visSides
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+
+.visSides::before
+    content: ''
+    position: absolute
+    bottom: -1px
+    right: calc(100% + 1px)
+    height: calc(100% + 2px)
+    width: 2500px
+    background-color: $outsideBackground
+
+.visSides::after
+    content: ''
+    position: absolute
+    bottom: -1px
+    left: calc(100% + 1px)
+    height: calc(100% + 2px)
+    width: 2500px
+    background-color: $outsideBackground
+
+
+.canvasInfo span
+    cursor: help
+
+.canvasInfo
+    position: absolute
+    display: flex
+    gap: 5px
+    bottom: 0
+    max-width: 100%
+    right: 0
+    background-color: $lightDark
+    border-top-left-radius: 8px
+    text-align: right
+    padding: 0 7px
+    font-size: 0.75rem
+    color: $Medium
+    z-index: 10
+    transition: opacity 0.2s
+    .projName
+        cursor: pointer
+        border-radius: 3px
+        transition: 0.075s
+        padding: 0 5px
+        &:hover
+            background-color: $active
+            color: $Dark
+
+
+
+.canvasInfo_invis
+    opacity: 0
+
+
+
+.scaleInfo,
+.simpleOption
+    animation: scaleFadeIn 0.2s
+
+
+.scaleFadeIn
+    animation: scaleFadeIn 0.2s
+
+
+.waitingVisTextContainer
+    display: flex
+    margin: 0 20px
+
+.waitingVis
+    position: absolute
+    background-color: $Medium
+    color: $lightDark
+    display: flex
+    align-items: center
+    justify-content: center
+    border: 1px solid $Light
+    padding: 6px
+    min-height: 30px
+    border-radius: 12px
+    box-shadow: 0 0 10px rgba(0,0,0,0.33)
+    animation: waitingIn 0.1s forwards
+
+@keyframes waitingIn 
+    fromtop: -50px
+    totop: 20px
+
+.waitingVisText
+    letter-spacing: 0.033rem
+
+.waitingVis p
+    margin: 0
+
+.waitingVis img
+    filter: contrast(2)
+    height: 35px
+    animation: loadingAnim 1s infinite steps(16)
+
+@keyframes loadingAnim 
+    from
+        rotate: 0deg
+    to 
+        rotate: 360deg
+
+.waiting1
+    animation: waiting1 1s infinite linear
+    font-weight: bold
+
+@keyframes waiting1 
+    from 
+        opacity: 0
+    25% 
+        opacity: 1
+    90% 
+        opacity: 1
+    to 
+        opacity: 0
+
+.waiting2
+    animation: waiting2 1s infinite linear
+    font-weight: bold
+
+@keyframes waiting2 
+    from 
+        opacity: 0
+    25% 
+        opacity: 0
+    50%
+        opacity: 1
+    90% 
+        opacity: 1
+    to 
+        opacity: 0
+
+.waiting3
+    animation: waiting3 1s infinite linear
+    font-weight: bold
+
+@keyframes waiting3 
+    from 
+        opacity: 0
+    50% 
+        opacity: 0
+    75% 
+        opacity: 1
+    90% 
+        opacity: 1
+    to 
+        opacity: 0
+
+
+
+@keyframes scaleFadeIn 
+    from 
+        scale: 0.5 
+        opacity: 0
+    to 
+        scale: 1 
+        opacity: 1
+
+
+
+@media screen and (max-width: $mobileBreakpoint) 
+    .canvasWrapper
+        border-radius: 12px
+        //border-width: 1px 0 1px 
+        border: none
+        --shadow: 5px 5px 10px rgba(0,0,0,0.125)
+        //box-shadow: 0px 3px 5px rgba(0,0,0,0.2) inset
+        box-shadow: $shadow1 inset
+        overflow: hidden
+
+    .newProject
+        flex-direction: column
+        height: calc(100% - 20px)
+        width: calc(100% - 20px)
+        overflow-y: auto
+        box-shadow: $shadow1
+        &.bottom::after
+            opacity: 1
+        &::after
+            transition: 0.2s
+            opacity: 0
+            content: ""
+            position: absolute
+            width: calc(100% - 20px)
+            border-radius: 0 0 12px 12px
+            height: 20px
+            bottom: 10px
+            background-image: linear-gradient(0deg, $active -200%, transparent)
+            pointer-events: none
+        &.top::before
+            opacity: 1
+        &::before
+            transition: 0.2s
+            opacity: 0
+            content: ""
+            position: absolute
+            width: calc(100% - 20px)
+            border-radius: 12px 12px 0 0
+            height: 20px
+            top: 10px
+            background-image: linear-gradient($active -200%, transparent)
+            pointer-events: none
+    
+
+    .resPresContainer
+        width: 100%
+    
+
+    .resPresets
+        border-top: 1px solid $lighterDark
+        //box-shadow: 0 0 15px rgba(0,0,0,0.5) inset
+        border-left: none
+        background-color: $transDark
+    

@@ -3,7 +3,7 @@ export function numberToHex (n:number){
 }
 
 export function rgbToHex (r:number ,g:number ,b:number) {
-    return(`#${numberToHex(r)}`)
+    return(`#${numberToHex(r)}${numberToHex(g)}${numberToHex(b)}`)
 }
 
 

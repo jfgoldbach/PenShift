@@ -1,0 +1,30 @@
+.saveContainer{
+    width: var(--toolBarWidth);
+    height: var(--toolBarWidth);
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.saveBtn{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+button{
+    --size: 45px;
+    width: var(--size);
+    height: var(--size);
+    padding: 0;
+    font-size: 1.33rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saveContainer button img{
+    width: 25px;
+    opacity: 0.75;
+    transition: opacity 0.15s;
+}

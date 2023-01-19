@@ -30,7 +30,7 @@ input[type="color"]:hover::-moz-color-swatch:hover{
     transition: 0.1s;
 }
 
-input[type="number"]{
+input[type="number"], input{
     background-color: var(--mediumDark);
     /*border: 1px solid var(--darkMedium);*/
     border: none;
@@ -60,6 +60,37 @@ select{
     border-radius: 5px;
     background-color: var(--mediumDark);
     padding: 3px;
+}
+
+input{
+    padding: 4px;
+}
+
+input[type="range"]{
+    padding: 0;
+    margin: 7px 0;
+    -webkit-appearance: none;
+    background: var(--Medium);
+    height: 3px;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px var(--mediumDark);
+    cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb,
+input[type="range"]::-moz-range-thumb{
+    -webkit-appearance: none;
+    --size: 14px;
+    height: var(--size);
+    width: var(--size);
+    border-radius: 50%;
+    border: 1px solid var(--darkMedium);
+    background: var(--mediumDark);
+    box-shadow: 
+        2px 2px 5px -6px white inset,
+        -2px -2px 5px -2px black inset;
+}
+input[type="range"]:active{
+    cursor: grabbing;
 }
 
 label{

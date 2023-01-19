@@ -1,0 +1,87 @@
+@import global
+
+.renameWrapper
+    position: absolute
+    display: flex
+    align-items: center
+    gap: 5px
+    background-color: $lightMedium
+    color: $mediumDark
+    border: 1px solid $lighterDark
+    box-shadow: $shadow2
+    padding: 10px
+    left: 50%
+    transform: translateX(-50%)
+    border-radius: 12px
+    top: -100px
+    transition: 0.2s
+    @media screen and (max-width: $mobileBreakpoint)
+        flex-direction: column
+        width: calc(100vw - 40px)
+        gap: 10px
+        top: -150px
+    span
+        background-color: $lightDark
+        padding: 2px
+        font-size: 0.8rem
+        font-weight: bold
+        color: $lightMedium
+        border-radius: 6px
+        border: 4px solid black
+        border-color: $darkMedium $mediumDark $semiDark $semiMedium
+        opacity: 0.66
+        @media screen and (max-width: $mobileBreakpoint)
+            display: none
+    form
+        display: flex
+        gap: 5px
+        input
+            max-width: 250px
+            flex-grow: 1
+            @media screen and (max-width: $mobileBreakpoint)
+                max-width: unset
+                width: calc(100% - 10px)
+        .buttonContainer
+            display: flex
+            gap: 5px
+        @media screen and (max-width: $mobileBreakpoint)
+            flex-direction: column
+            width: 100%
+    &.active
+        top: calc($toolBarWidth + 10px)
+        @media screen and (max-width: $mobileBreakpoint)
+            top: calc($toolBarWidth + 20px)
+    button
+        $borderOpacity: 0.33
+        height: 25px
+        display: flex
+        align-items: center
+        justify-content: center
+        font-size: 1.1rem
+        cursor: pointer
+        border-radius: 6px
+        box-shadow: $shadow3
+        transition: 0.075s
+        background-color: $lightDark
+        @media screen and (max-width: $mobileBreakpoint)
+            width: 100%
+            height: 35px
+        &:hover
+            border-width: 3px !important
+        &.confirm
+            border: 1px solid rgba($confirm, $borderOpacity)
+            //border: none
+            color: $confirm
+            background-image: linear-gradient(25deg, $confirm -400%, $lightDark 80%)
+            &:hover
+                border-color: rgba($confirm, 0.66)
+                background-image: none
+        &.abort
+            border: 1px solid rgba($abort, $borderOpacity)
+            //border: none
+            color: $abort
+            background-image: linear-gradient(25deg, $abort -400%, $lightDark 80%)
+            &:hover
+                border-color: rgba($abort, 0.66)
+                background-image: none
+            

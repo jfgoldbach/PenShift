@@ -1,23 +1,31 @@
-import { useContext, useEffect, useRef } from "react"
-import "./styles/Bars.css"
+import React, { useContext, useEffect, useRef, useState } from "react"
+import { toolType } from "../types/types"
+import { scrollHorz } from "./FrequentlyUsedFunctions"
+//import "./styles/Bars.css"
+//import "./styles/Settings.css"
 import { stateContext } from "./Viewport"
 
 
 export function Vertbar() {
-    const {resolution, frontColor, setFrontColor, tool, setTool, eraseType, setEraseType, setContainerTrans} = useContext(stateContext)
+    const {resolution, frontColor, setFrontColor, tool, setTool, setContainerTrans, waiting} = useContext(stateContext)
+
+    const [showSettings, setShowSettings] = useState(false)
+    const [settings, setSettings] = useState("")
+    const [scroll, setScroll] = useState("")
 
     const resAvail = useRef<boolean>(false)
+    const barRef = useRef<HTMLDivElement>(null)
 
-    function changeFrontColor (e) {
-        setFrontColor(prev => [e.target.value, prev[1]])
+    function changeFrontColor (e: React.ChangeEvent<HTMLInputElement>) {
+        setFrontColor((prev: [string,string])=> [e.target.value, prev[1]])
     }
 
-    function changeBackColor (e) {
-        setFrontColor(prev => [prev[0], e.target.value])
+    function changeBackColor (e: React.ChangeEvent<HTMLInputElement>) {
+        setFrontColor((prev: [string,string]) => [prev[0], e.target.value])
     }
 
-    function changeTool (toolName) {
-        setTool(toolName)
+    function changeTool (toolName: string) {
+        setTool(toolName as toolType)
     }
 
     useEffect(() => {
@@ -27,7 +35,7 @@ export function Vertbar() {
     //maybe move key event listener somewhere else: doesnt make much sense here
     useEffect(() => {
         document.addEventListener("keydown", (e) => {
-            if(resAvail.current){
+            if(resAvail.current && document.activeElement === document.body){ //shortcuts only when there is no focused element
                 switch(e.key){
                     case "b":
                         setTool("brush")
@@ -43,6 +51,9 @@ export function Vertbar() {
                         break
                     case "c":
                         setContainerTrans([0,0])
+                        break
+                    case "f":
+                        setTool("fill")
                         break
                     case "z":
                         const zoomRange = document.getElementById("zoomRange")
@@ -65,14 +76,32 @@ export function Vertbar() {
                 }
             }
         })
+
+        const bar = barRef.current
+        if(bar){
+            scrollHorz(bar, setScroll)
+            bar.addEventListener("scroll", scroll)
+        }
+        function scroll(){
+            scrollHorz(bar, setScroll)
+        }
     },[])
 
+    function closeSettings() {
+        setShowSettings(false)
+        setSettings("")
+    }
+
+    function settingsBtn() {
+        setShowSettings(prev => !prev)
+    }
+
     return(
-        <div className="vertBar">
+        <div className={`vertBar ${scroll}`} ref={barRef}>
             <div className="interactionBar">
-                <div className={`toolWrapper ${resolution? "" : "unavailable"}`}>
+                <div className={`toolWrapper ${resolution && !waiting? "" : "unavailable"}`}>
                     <button 
-                        className={tool === "brush" ? "active" : ""} 
+                        className={`btn ${tool === "brush" ? "active" : ""}`} 
                         title="[B] Paintbrush: Paint in the regular style" 
                         onClick={() => changeTool("brush")}
                         >
@@ -80,7 +109,7 @@ export function Vertbar() {
                     </button>
 
                     <button 
-                        className={tool === "fill" ? "active" : ""} 
+                        className={`btn ${tool === "fill" ? "active" : ""}`} 
                         title="[F] Fill tool (currently only supports areas of up to 10.000px)" 
                         onClick={() => changeTool("fill")}
                         >
@@ -88,7 +117,7 @@ export function Vertbar() {
                     </button>
 
                     <button 
-                        className={tool === "pipette" ? "active" : ""} 
+                        className={`btn ${tool === "pipette" ? "active" : ""}`} 
                         title="[P] Pipette: [Left Mouse]: Primary color, [Right Mouse]: Secondary color" 
                         onClick={() => changeTool("pipette")}
                         >
@@ -96,7 +125,7 @@ export function Vertbar() {
                     </button>
 
                     <button 
-                        className={`unavailable ${tool === "text" ? "active" : ""}`} 
+                        className={`unavailable btn ${tool === "text" ? "active" : ""}`} 
                         title="Text tool" 
                         onClick={() => changeTool("text")}
                         >
@@ -104,7 +133,7 @@ export function Vertbar() {
                     </button>
 
                     <button 
-                        className={tool === "eraser" ? "active" : ""} 
+                        className={`btn ${tool === "eraser" ? "active" : ""}`} 
                         title="[E] Eraser: remove color and all opacity" 
                         onClick={() => changeTool("eraser")}
                         >
@@ -114,9 +143,9 @@ export function Vertbar() {
                     
                 </div>
 
-                <div className={`toolWrapper ${resolution? "" : "unavailable"}`}>
-                <button
-                        className={tool === "move" ? "active" : ""} 
+                <div className={`toolWrapper ${resolution && !waiting? "" : "unavailable"}`}>
+                    <button
+                        className={`btn ${tool === "move" ? "active" : ""}`} 
                         title="[M] [Wheel press] Move the canvas"
                         onClick={() => changeTool("move")}
                         >
@@ -130,17 +159,56 @@ export function Vertbar() {
                 </div>
                 
             </div>
-            <div className="vertBarButtom">
-                <button className="aspectCube" title="Settings">
-                    <img className="invert" src="images/selfmade/Settings.svg" />
+            <div className="vertBarBottom">
+                <button className="aspectCube btn" title="Settings" onClick={settingsBtn}>
+                    <img className={`invert ${showSettings? "rotateSetting" : ""}`} src="images/selfmade/Settings.svg" />
                 </button>
                 <a href="https://www.jfgoldbach.de" target="_blank" className="copy">
-                    <small>&copy; 2022</small>
+                    <small>&copy; 2022/23</small>
                     <small>Julian</small>
                     <small>Goldbach</small>
                 </a>
             </div>
             
+            {showSettings &&
+                <div className="prompt settingsWindow fadeIn">
+                    <div className="settingsTop">
+                        <h2>Settings</h2>
+                        <button className="closeBtn" onClick={closeSettings}>&times;</button>
+                    </div>
+                    <div className="settingsBottom">
+                        <div className="settingsSidebar">
+                            <button 
+                                className={`settingsBtn ${settings === "proj"? "active" : ""}`} 
+                                onClick={() => setSettings("proj")}>Project settings
+                            </button>
+                            <button 
+                                className={`settingsBtn ${settings === "defaults"? "active" : ""}`} 
+                                onClick={() => setSettings("defaults")}>Default values
+                            </button>
+                            <button 
+                                className={`settingsBtn ${settings === "storage"? "active" : ""}`} 
+                                onClick={() => setSettings("storage")}>Storage
+                            </button>
+                            <button 
+                                className={`settingsBtn ${settings === "zoom"? "active" : ""}`} 
+                                onClick={() => setSettings("zoom")}>Zoom
+                            </button>
+                            <button 
+                                className={`settingsBtn ${settings === "rendering"? "active" : ""}`} 
+                                onClick={() => setSettings("rendering")}>Rendering
+                            </button>
+                            <button 
+                                className={`settingsBtn ${settings === "lang"? "active" : ""}`} 
+                                onClick={() => setSettings("lang")}>Language
+                            </button>
+                        </div>
+                        <div className="settingsMain">
+                            <p>Settings will come in the future</p>
+                        </div>
+                    </div>
+                </div>
+            }
             
         </div>
     )

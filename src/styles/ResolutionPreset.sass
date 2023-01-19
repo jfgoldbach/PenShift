@@ -1,0 +1,38 @@
+@import global
+    
+.resPresWrapper
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    background-color: transparent !important
+    gap: 5px
+    padding: 7px 12px
+    border: 1px solid $lighterDark !important
+    width: calc(50% - 5px)
+    transition: 0.1s !important
+    @media screen and (min-width: $mobileBreakpoint)
+        &:hover
+            background-color: $Medium !important
+            color: $mediumDark
+
+
+.resPresWrapper * 
+    margin: 0
+
+.resPresWrapper h1
+    font-weight: normal
+    font-size: 1.1rem
+
+.resPresWrapper p
+    font-size: 0.7rem
+    color: var(--darkMedium)
+
+
+@media screen and (max-width: $mobileBreakpoint) 
+    .resPresWrapper
+        width: auto
+        background-color: $Medium !important
+        color: $semiDark
+        p
+            color: $lighterDark

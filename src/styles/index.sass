@@ -1,0 +1,189 @@
+@import "global"
+  
+:root 
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif
+
+  color-scheme: light dark
+  color: rgba(255, 255, 255, 0.87)
+  background-color: #242424
+
+  font-synthesis: none
+  text-rendering: optimizeLegibility
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  -webkit-text-size-adjust: 100%
+
+*:not(input)::selection
+  background-color: none
+
+.debug
+  background-color: red
+  outline: 2px solid orange
+
+
+.invert
+  filter: invert(1)
+
+
+.mirrorX
+  transform: scaleX(-1)
+
+
+a 
+  font-weight: 500
+  color: #646cff
+  text-decoration: inherit
+
+a:hover 
+  color: #535bf2
+
+
+body 
+  margin: 0
+  background-color: $mediumDark
+  height: 100vh
+  width: 100vw
+  /*overflow: hidden*/
+
+
+h1 
+  font-size: 3.2em
+  line-height: 1.1
+
+@mixin btn()
+  border-radius: 8px
+  border: 1px solid transparent
+  padding: 0.6em 1.2em
+  font-size: 1em
+  font-weight: 500
+  font-family: inherit
+  background-color: #1a1a1a
+  cursor: pointer
+  transition: border-color 0.25s
+
+.btn
+  @include btn()
+.closeBtn 
+  @include btn()
+  background-color: $abort
+  font-size: 1.5rem
+  padding: 0
+  height: fit-content
+  font-weight: bold
+  transition: 0.1s
+  &:hover
+    box-shadow: 0 0 15px $abort
+    background-color: rgb(255, 178, 178)
+    color: red
+
+
+.aspectCube
+  aspect-ratio: 1/1
+
+
+.pixalated
+  image-rendering: pixelated
+
+
+p
+  margin: 0
+
+
+.fadeIn
+  animation: fadeIn 0.33s
+
+@keyframes fadeIn 
+  fromopacity: 0
+  toopacity: 1
+
+
+.btn:hover
+  @media screen and (min-width: $mobileBreakpoint)
+    border-color: #646cff
+    box-shadow: 0 0 10px rgba(158, 163, 255, 0.25)
+
+.btn:focus,
+.btn:focus-visible 
+  outline: 4px auto -webkit-focus-ring-color
+
+
+input, select
+  color: $lightMedium
+
+
+input:not(.unavailable):hover,
+input:not(.unavailable):focus,
+select:hover, select:focus
+  @media screen and (min-width: $mobileBreakpoint)
+    color: $Light
+    border-color: #646cff
+    box-shadow: 0 0 10px rgba(158, 163, 255, 0.33)
+    transition: box-shadow 0.2s
+
+
+.waiting
+  cursor: wait !important
+
+
+.unavailable
+  opacity: 0.33
+  filter: saturate(0)
+  pointer-events: none
+
+
+.info
+  width: 0.85rem
+  opacity: 0.75
+  cursor: help
+  @media screen and (max-width: $mobileBreakpoint)
+    display: none
+
+
+.prompt
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+  display: flex
+  flex-direction: column
+  background-color: $lightDark
+  border-radius: 12px
+  box-shadow: 0 0 10px black
+  z-index: 100
+  overflow: hidden
+
+
+.bg-trans
+  background-image: url(/images/transback.jpg)
+
+
+.absolute-fill
+  position: absolute
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+
+
+@media (prefers-color-scheme: light) 
+  :root 
+    color: #213547
+    background-color: #ffffff
+  
+  a:hover 
+    color: #747bff
+  
+  .btn 
+    background-color: #f9f9f9
+  
+
+@media screen and (max-width: 900px) 
+  body
+    height: var(--mobileHeight)
+    overflow: hidden
+  
+
+  .prompt
+    max-width: calc(100vw - 6px)
+    max-height: calc(100vh - 6px)
+  

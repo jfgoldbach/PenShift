@@ -1,0 +1,90 @@
+@import global
+    
+@media screen and (min-width: 900px) 
+    .savePreview
+        min-width: 500px
+    
+
+
+.saveShow
+    flex-shrink: 1
+    border: 1px solid $darkMedium
+    padding: 5px
+    border-radius: 9px
+    display: flex
+    width: 40vw
+    height: 60vh
+    background-color: $transDark
+    .imgContainer
+        width: auto
+        height: auto
+        width: 100%
+        max-height: 100%
+        display: flex
+        align-items: center
+        justify-content: center
+        //background-color: red
+        img
+            max-width: 100%
+            max-height: 100%
+            image-rendering: pixelated
+
+
+.saveBottom
+    display: flex
+    gap: 10px
+    //box-shadow: inset 0 10px 10px -5px rgba(0,0,0,0.25)
+    padding: 10px
+
+
+.saveLeftSide
+    flex-grow: 1
+    flex-shrink: 1
+
+
+.savePreview form
+    display: flex
+    flex-direction: column
+    gap: 10px
+    align-items: flex-start
+    height: 100%
+
+
+.savePreview form label
+    text-align: left
+
+
+.savePreview form button
+    margin-top: auto
+    height: unset
+    width: 100%
+
+
+@media screen and (max-width: 900px) 
+    .savePreview
+        max-width: unset
+        max-height: unset
+        border-radius: 0
+        width: 100%
+        height: var(--mobileHeight)
+    
+    .saveBottom
+        flex-direction: column
+    
+    .saveShow
+        width: unset
+        height: unset
+        min-height: 50px
+        max-height: 50vh
+        border: none
+    
+    .savePreview form
+        width: 100%
+    
+    .prompt 
+        box-shadow: 1px 1px 10px 5px black
+        overflow-y: auto
+        button.btn
+            width: 100%
+            margin-top: 30px
+            border: 1px solid $darkMedium

@@ -1,0 +1,36 @@
+.resPresWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent !important;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 1px solid var(--lighterDark) !important;
+  width: calc(50% - 5px);
+  transition: background-color 0.1s !important;
+}
+
+.resPresWrapper:hover {
+  background-color: var(--lighterDark) !important;
+}
+
+.resPresWrapper * {
+  margin: 0;
+}
+
+.resPresWrapper h1 {
+  font-weight: normal;
+  font-size: 1.1rem;
+}
+
+.resPresWrapper p {
+  font-size: 0.7rem;
+  color: var(--darkMedium);
+}
+
+@media screen and (max-width: 900px) {
+  .resPresWrapper {
+    width: auto;
+  }
+}

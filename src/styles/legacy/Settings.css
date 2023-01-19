@@ -1,0 +1,95 @@
+.settingsWindow {
+  width: 40vw;
+  height: 40vh;
+  min-width: 500px;
+  min-height: 300px;
+}
+
+.settingsTop {
+  height: 40px;
+  display: flex;
+  padding: 0 10px;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.settingsTop h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.settingsBottom {
+  display: flex;
+  flex-grow: 1;
+  box-shadow: inset 0 10px 10px -5px rgba(0, 0, 0, 0.25);
+}
+
+.settingsSidebar {
+  padding: 20px 0;
+  background-color: var(--Medium);
+  border-radius: 9px;
+  margin: 10px;
+  width: 30%;
+  max-width: 12rem;
+  min-width: -webkit-fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: hidden;
+  align-items: flex-end;
+}
+
+.settingsBtn {
+  width: 100%;
+  font-size: 1rem;
+  padding: 11px 20px;
+  background-color: transparent;
+  border: none;
+  color: var(--mediumDark);
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  cursor: pointer;
+  justify-content: flex-start;
+  transition: 0.15s;
+  border-radius: 8px 0 0 8px;
+  text-decoration: underline;
+  -webkit-text-decoration-color: transparent;
+          text-decoration-color: transparent;
+}
+
+.settingsBtn:hover {
+  -webkit-text-decoration-color: var(--mediumDark);
+          text-decoration-color: var(--mediumDark);
+}
+
+.settingsBtn.active {
+  background-color: var(--lightDark);
+  color: var(--darkLight);
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  justify-content: flex-end;
+  cursor: default;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.settingsBtn.active:hover {
+  -webkit-text-decoration-color: transparent;
+          text-decoration-color: transparent;
+}
+
+.settingsMain {
+  padding: 10px;
+}
+
+label p {
+  display: flex;
+  justify-content: space-between;
+}

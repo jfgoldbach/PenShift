@@ -1,0 +1,334 @@
+@import global
+    
+.horzBar
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding-right: 16px
+    padding-left: 32px
+    max-width: 100vw
+    flex-grow: 1
+    overflow-x: auto
+    gap: 55px
+    height: $toolBarWidth
+    /*border-left: 1px solid $darkMedium*/
+    box-shadow: 7px 0 7px -5px $mediumDark inset
+    margin-left: 12px
+    .saveContainer
+        display: none
+
+.horzBar > h1
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+    font-size: 2rem
+    display: flex
+    white-space: nowrap
+    align-items: center
+    margin: 0
+    color: $darkLight
+
+
+h1 img
+    width: 38px
+    margin-left: 7px
+
+
+.horzFlexBetween
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+
+
+.infoIcon
+    font-size: 1.125rem
+
+
+.zoomInfo
+    position: relative
+    @include flexCenter
+    flex-direction: column
+    height: 100%
+    gap: 6px
+    font-size: 0.9rem
+
+.zoomInfo img
+    height: 1.33rem
+
+.zoomInfo .zoomPercent
+    display: flex
+    gap: 2px
+
+.zoomInfo .horzFlexBetween
+    gap: 10px
+
+.zoomInfo * 
+    margin: 0
+
+.zoomInfo select
+    max-width: 6rem
+
+.zoomInfo input[type="number"]
+    width: 4rem
+
+.zoomInfo input[type="range"]
+    width: 100%
+
+
+.scaleInfo
+    @include flexCenter
+    flex-direction: column
+    gap: 6px
+    .horzFlexBetween
+        width: 100%
+
+.scaleInfo * 
+    margin: 0
+
+.scaleInfo p
+    font-size: 0.9rem
+
+.scaleInfo input[type="range"]
+    width: 130px
+
+.scaleInfo input[type="number"]
+    width: 3rem
+    margin: 0 4px
+    margin-left: auto
+
+
+.interactionBar
+    display: flex
+    gap: 30px
+
+
+.horzBar .interactionBar > .btn
+    margin-right: 28px
+
+
+.sliderBar
+    display: flex
+    justify-content: flex-start
+    flex-grow: 1
+    gap: 55px
+    height: 100%
+
+
+.vertBar
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: center
+    background-color: $lightDark
+    width: $toolBarWidth
+    padding-top: 32px
+    padding-bottom: 5px
+    overflow-y: auto
+    flex-shrink: 0
+    /*border-top: 1px solid $darkMedium*/
+    box-shadow: 0 7px 7px -5px $mediumDark inset
+    margin-top: 12px
+    .interactionBar
+        gap: 40px
+        flex-direction: column
+        align-items: center
+        flex-grow: 1
+    input[type="color"]
+        align-self: center
+
+input[type="color"].active::-webkit-color-swatch,
+input[type="color"].active::-moz-color-swatch
+    outline: 2px dashed $darkLight
+
+
+.vertBarBottom
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 25px
+    @media screen and (max-width: $mobileBreakpoint)
+        margin-left: 20px
+    button
+        @media screen and (max-width: $mobileBreakpoint)
+            background-color: $lightDark
+        img
+            transition: rotate 0.75s !important
+    
+
+
+.rotateSetting
+    rotate: 180deg !important
+
+
+.horzBar .btn,
+.vertBar .btn
+    $size: 45px
+    width: $size
+    height: $size
+    padding: 0
+    font-size: 1.33rem
+    @include flexCenter
+
+
+.horzBar .btn img,
+.vertBar .btn img
+    width: 25px
+    opacity: 0.75
+    transition: opacity 0.15s
+
+.horzBar .btn:hover img,
+.vertBar .btn:hover img
+    opacity: 1
+    transition: opacity 0.15s
+
+
+.dwnImgContainer
+    height: 40%
+    border-radius: 4px
+    overflow: hidden
+
+.saveImg
+    width: 100%
+    height: 100%
+
+
+.vertBar .toolWrapper .btn
+    background-color: transparent
+    font-size: 1.75rem
+    @include flexCenter
+
+.vertBar .btn.active
+    border-radius: 16px
+    background-color: $transDark
+    border: 1px solid $lighterDark
+
+.vertBar .btn.active img
+    opacity: 1
+
+
+.vertBarBottom .btn
+    @include flexCenter
+
+.vertBarBottom .btn img
+    width: 29px
+
+
+.toolWrapper,
+.colorWrapper
+    display: flex
+    gap: 10px
+    flex-direction: column
+
+
+
+
+.copy
+    @include flexCenter
+    flex-direction: column
+    width: 100%
+    color: $darkMedium
+    cursor: pointer
+    @media screen and (max-width: $mobileBreakpoint)
+        text-decoration: underline
+        text-decoration-color: rgba($darkMedium, 0.5)
+
+
+small
+    font-size: 0.65rem
+    margin: 0
+    padding: 0
+    text-align: center
+    line-height: 0.75rem
+    transition: color 0.2s
+    white-space: nowrap
+    cursor: pointer
+
+
+.copy:hover
+    color: $Medium
+
+
+.moreOptions
+    gap: 7px
+    @include flexCenter
+
+
+.simpleOption
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: space-evenly
+    gap: 2px
+
+.simpleOption p
+    font-size: 0.95rem
+
+.simpleOption img
+    height: 1.25rem
+
+.timetravel
+    p
+        font-size: 0.75rem
+        position: absolute
+        bottom: 11%
+
+
+
+@media screen and (max-width: $mobileBreakpoint) 
+    .vertBar
+        flex-direction: row
+        background-color: $mediumDark
+        overflow-y: auto
+        padding: 5px
+        width: unset
+        margin-top: 0
+
+    .vertBar .interactionBar
+        flex-direction: row
+    
+    .vertBar .toolWrapper,
+    .vertBar .colorWrapper,
+    .vertBarBottom
+        flex-direction: row
+    
+    .sliderBar
+        gap: 20px
+
+    .horzBar
+        box-shadow: none
+        gap: 20px
+        height: 67px
+        margin: 0
+        padding: 0 10px
+        border-radius: 12px 12px 0 0
+        .saveContainer
+            display: block
+
+    .scaleInfo
+        flex-direction: column-reverse
+    
+    .horzBar,
+    .vertBar
+        &.right::after
+            opacity: 1
+        &::after
+            content: ""
+            position: absolute
+            right: 0
+            height: 100%
+            width: 25px
+            background-image: linear-gradient(270deg, $active -200%, transparent)
+            pointer-events: none
+            opacity: 0
+            transition: 0.2s
+        &.left::before
+            opacity: 1
+        &::before
+            content: ""
+            position: absolute
+            left: 0
+            height: 100%
+            width: 25px
+            background-image: linear-gradient(90deg, $active -200%, transparent)
+            pointer-events: none
+            opacity: 0
+            transition: 0.2s

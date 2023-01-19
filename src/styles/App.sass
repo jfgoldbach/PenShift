@@ -1,0 +1,128 @@
+@import  global
+    
+.App
+    width: 100vw
+    height: 100vh
+    background-color: #151515
+
+
+input[type="color"]
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none
+    padding: 0
+    margin: 0
+    border: none
+    outline: none
+    width: 35px
+    height: 35px
+    cursor: pointer
+    background-color: transparent
+
+input[type="color"]::-webkit-color-swatch,
+input[type="color"]::-moz-color-swatch
+    border-radius: 8px
+    border: none
+    transition: 0.1s
+
+input[type="color"]:hover::-webkit-color-swatch,
+input[type="color"]:hover::-moz-color-swatch:hover
+    border: 2px solid $darkMedium
+    outline: 1px solid $darkLight
+    transition: 0.1s
+
+
+input[type="number"],
+input
+    background-color: $mediumDark
+    /*border: 1px solid $darkMedium*/
+    border: none
+    border-radius: 5px
+
+
+input[type="text"]
+    border-radius: 6px
+    padding: 6px
+    font-size: 1rem
+    border: none
+    background-color: $mediumDark
+    text-align: center
+    max-width: 100%
+    @media screen and (max-width: $mobileBreakpoint)
+        font-size: 1.25rem
+
+
+input[type="checkbox"]
+    $size: 18px
+    width: $size
+    height: $size
+    cursor: pointer
+
+
+select
+    text-align: center
+    border: 1px solid $lighterDark
+    border-radius: 5px
+    background-color: $mediumDark
+    padding: 3px
+
+
+input
+    padding: 4px
+
+input[type="range"]
+    padding: 0
+    //margin: 7px 0
+    -webkit-appearance: none
+    height: 10px
+    cursor: pointer
+    background: none
+
+    @mixin thumb()
+        -webkit-appearance: none
+        $size: 14px
+        height: $size
+        width: $size
+        border-radius: 50%
+        border: 1px solid $darkMedium
+        background: $mediumDark
+        box-shadow: 2px 2px 5px -6px white inset, -2px -2px 5px -2px black inset
+    &::-webkit-slider-thumb
+        @include thumb
+        margin-top: -6px
+    &::-moz-range-thumb
+        @include thumb
+        
+    @mixin track()
+        height: 3px
+        border-radius: 2px
+        background: $Medium
+        box-shadow: 0 2px 5px $mediumDark
+    &::-webkit-slider-runnable-track
+        @include track
+    &::-moz-range-track
+        @include track
+        
+
+input[type="range"]:active
+    cursor: grabbing
+
+
+label
+    font-size: 0.85rem
+    color: $lightMedium
+    text-align: center
+    display: flex
+    flex-direction: column
+    width: 100%
+    line-height: 1.25rem
+
+button
+    $size: 45px
+    width: $size
+    height: $size
+    padding: 0
+    font-size: 1.33rem
+    display: flex
+    align-items: center
+    justify-content: center

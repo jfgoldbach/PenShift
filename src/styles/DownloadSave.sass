@@ -1,0 +1,25 @@
+@import global
+
+.saveContainer
+    width: $toolBarWidth
+    height: $toolBarWidth
+    display: flex
+    align-items: flex-end
+    justify-content: flex-end
+    @media screen and (max-width: $mobileBreakpoint)
+        height: auto
+        align-items: center
+        //background-color: red
+        display: none
+
+
+.saveBtn
+    display: flex
+    flex-direction: column
+    gap: 2px
+
+
+.saveContainer button img
+    width: 25px
+    opacity: 0.75
+    transition: opacity 0.15s
